@@ -55,7 +55,7 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     
     await startNewGame();
 
-})
+
 
 //Karten zur Liste hinzufügen
 let i =0;
@@ -66,7 +66,7 @@ console.log("span", span);
 li.appendChild(span);
 playerlist.appendChild(li);
 span.textContent=result.Players[0].Cards[i].Color+" "+result.Players[0].Cards[i].Text;
-
+})
 async function startNewGame() {
 
     // hier starten wir gleich den request
