@@ -37,37 +37,53 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     //liste_von_player
     let playerlist = document.getElementById("playerlist");
+    
+    
+  await startNewGame();
+    
+    displayplayernames("playerName1", "Player1_name_and_cards");
+    displayplayernames("playerName2", "Player2_name_and_cards");
+    displayplayernames("playerName3", "Player3_name_and_cards");
+    displayplayernames("playerName4", "Player4_name_and_cards");
 
 
-    players_global.forEach(ein_player_name => {
+    distributeCards(0, "cards_player1");
+    distributeCards(1, "cards_player2");
+    distributeCards(2, "cards_player3");
+    distributeCards(3, "cards_player4");
+});
+
+function displayplayernames(htmlidname, htmlid_div){
+
+        const h3 = document.createElement("h3");
+        let div= document.getElementById(htmlid_div)
+        h3.textContent = document.getElementById(htmlidname).value
+        div.appendChild(h3);
+      
+}
+  
+
+function distributeCards(playerid, htmlid) {
+    //alle Karten ausgeben
+    playerlist = document.getElementById(htmlid);
+    let i = 0;
+    while (i < result.Players[playerid].Cards.length) {
+
         const li = document.createElement("li");
-        console.log("li: ", li);
+
         const span = document.createElement("span");
-        console.log("span: ", span);
 
         li.appendChild(span);
         playerlist.appendChild(li);
+        span.textContent = "Card: "+
+        result.Players[playerid].Cards[i].Text + " " +
+        result.Players[playerid].Cards[i].Color;
+        i++;
+    }
+}
 
-        span.textContent = ein_player_name;
-    
-    });
-
-    
-    await startNewGame();
-
-
-
-//Karten zur Liste hinzufügen
-let i =0;
-const li= document.createElement("li");
-console.log("li: ", li);
-const span=document.createElement("span");
-console.log("span", span);
-li.appendChild(span);
-playerlist.appendChild(li);
-span.textContent=result.Players[0].Cards[i].Color+" "+result.Players[0].Cards[i].Text;
-})
 async function startNewGame() {
+
 
     // hier starten wir gleich den request
 
