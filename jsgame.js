@@ -55,10 +55,10 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
 function displayplayernames(htmlidname, htmlid_div){
 
-        const h3 = document.createElement("h3");
+        let h3 = document.createElement("h3");
         let div= document.getElementById(htmlid_div)
         h3.textContent = document.getElementById(htmlidname).value
-        div.appendChild(h3);
+        div.insertBefore(h3,div.firstChild);
       
 }
   
