@@ -51,7 +51,14 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     distributeCards(1, "cards_player2");
     distributeCards(2, "cards_player3");
     distributeCards(3, "cards_player4");
+
 });
+
+const CardsUrl = "https://nowaunoweb.azurewebsites.net/Content/Cards/";
+
+function buildSrcString(color, number){
+    return `${CardsUrl}${color + number}.png`;
+}
 
 function displayplayernames(htmlidname, htmlid_div){
 
@@ -78,7 +85,15 @@ function distributeCards(playerid, htmlid) {
         span.textContent = "Card: "+
         result.Players[playerid].Cards[i].Text + " " +
         result.Players[playerid].Cards[i].Color;
+
+        //Image
+        const img=document.createElement("img");
+        const color = result.Players[playerid].Cards[i].Color.charAt(0);
+        const number = result.Players[playerid].Cards[i].Value;
+        img.src = buildSrcString(color, number);
+        li.appendChild(img);
         i++;
+
     }
 }
 
@@ -116,9 +131,7 @@ async function startNewGame() {
         headers: {
 
             'Content-type': 'application/json; charset=UTF-8',
-
         }
-
     });
 
 
