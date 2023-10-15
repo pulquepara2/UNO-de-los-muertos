@@ -37,10 +37,10 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     //liste_von_player
     let playerlist = document.getElementById("playerlist");
-    
-    
-  await startNewGame();
-    
+
+
+    await startNewGame();
+
     displayplayernames("playerName1", "Player1_name_and_cards");
     displayplayernames("playerName2", "Player2_name_and_cards");
     displayplayernames("playerName3", "Player3_name_and_cards");
@@ -56,19 +56,19 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
 const CardsUrl = "https://nowaunoweb.azurewebsites.net/Content/Cards/";
 
-function buildSrcString(color, number){
+function buildSrcString(color, number) {
     return `${CardsUrl}${color + number}.png`;
 }
 
-function displayplayernames(htmlidname, htmlid_div){
+function displayplayernames(htmlidname, htmlid_div) {
 
-        let h3 = document.createElement("h3");
-        let div= document.getElementById(htmlid_div)
-        h3.textContent = document.getElementById(htmlidname).value
-        div.insertBefore(h3,div.firstChild);
-      
+    let h3 = document.createElement("h3");
+    let div = document.getElementById(htmlid_div)
+    h3.textContent = document.getElementById(htmlidname).value
+    div.insertBefore(h3, div.firstChild);
+
 }
-  
+
 
 function distributeCards(playerid, htmlid) {
     //alle Karten ausgeben
@@ -82,12 +82,12 @@ function distributeCards(playerid, htmlid) {
 
         li.appendChild(span);
         playerlist.appendChild(li);
-        span.textContent = "Card: "+
-        result.Players[playerid].Cards[i].Text + " " +
-        result.Players[playerid].Cards[i].Color;
-
+        /* span.textContent = "Card: "+
+         result.Players[playerid].Cards[i].Text + " " +
+         result.Players[playerid].Cards[i].Color;
+ */
         //Image
-        const img=document.createElement("img");
+        const img = document.createElement("img");
         const color = result.Players[playerid].Cards[i].Color.charAt(0);
         const number = result.Players[playerid].Cards[i].Value;
         img.src = buildSrcString(color, number);

@@ -1,0 +1,18 @@
+#maincontent{
+    margin-top:50px;
+    font-family: Alike Angular;
+    color:#ebe6f7;
+    background-color:#040159;
+}
+h1{
+    margin-bottom: 5rem;
+   color:#d8ae2f;
+}
+
+button{
+    margin-top: 20px;
+}
+
+#playernamesform{
+    font-family: Alike Angular;
+}
