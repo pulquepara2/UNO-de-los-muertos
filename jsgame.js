@@ -1,6 +1,8 @@
 let result = Object();
-
+/***********************************************/
 // Modalen Dialog öffnen um Namen einzugeben
+/***********************************************/
+
 let myModal = new bootstrap.Modal(document.getElementById('playerNames'));
 document.getElementById("startbutton").addEventListener("click", function () {
 
@@ -54,11 +56,19 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
 });
 
+/***********************************************/
+// Die URL für die Karten
+/***********************************************/
+
 const CardsUrl = "https://nowaunoweb.azurewebsites.net/Content/Cards/";
 
 function buildSrcString(color, number) {
     return `${CardsUrl}${color + number}.png`;
 }
+
+/***********************************************/
+// Zeigt die Spielernamen auf dem Spielfeld an
+/***********************************************/
 
 function displayplayernames(htmlidname, htmlid_div) {
 
@@ -69,6 +79,9 @@ function displayplayernames(htmlidname, htmlid_div) {
 
 }
 
+/***********************************************/
+//Zeigt die Karten der Spieler an
+/***********************************************/
 
 function distributeCards(playerid, htmlid) {
     //alle Karten ausgeben
@@ -100,13 +113,9 @@ function distributeCards(playerid, htmlid) {
 async function startNewGame() {
 
 
-    // hier starten wir gleich den request
-
     // warten auf das promise (alternativ fetch, then notation)
 
     //ladet die webseite von uno martin. hinten /api/game/start hinzufügen um ein neues spiel zu laden
-
-    //wie auf der webseite
 
     response = await fetch("https://nowaunoweb.azurewebsites.net/api/Game/Start", {
 

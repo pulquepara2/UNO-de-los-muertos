@@ -2,15 +2,23 @@
     margin-top:50px;
     font-family: Alike Angular;
     color:#ebe6f7;
-    background-color:#040159;
-}
-h1{
-    margin-bottom: 5rem;
-   color:#d8ae2f;
+    background-color:#071540;
+    border-radius: 5px;
 }
 
+h1{
+    margin-bottom: 5rem;
+    margin-top: 50px;
+    color:#F28705;
+   
+}
+h3{
+    color:#F28705;
+}
 button{
     margin-top: 20px;
+    margin-bottom: 20px;
+    
 }
 
 #playernamesform{
