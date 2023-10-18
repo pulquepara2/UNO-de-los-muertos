@@ -162,3 +162,10 @@ async function startNewGame() {
     }
 
 }
+
+function showTopCard(){
+    response = await fetch("https://nowaunoweb.azurewebsites.net/api/game/topCard", {
+        method: 'GET',
+        body
+    )
+}}
