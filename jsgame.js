@@ -1,8 +1,11 @@
 let result = Object();
 let playerList = [];
+
+
 /***********************************************/
 // Modalen Dialog öffnen um Namen einzugeben
 /***********************************************/
+
 
 let myModal = new bootstrap.Modal(document.getElementById('playerNames'));
 document.getElementById("startbutton").addEventListener("click", function () {
@@ -12,15 +15,6 @@ document.getElementById("startbutton").addEventListener("click", function () {
 
 let players_global = ["a", "b"];
 
-
-// nach jeder tasteneingabe im formular überprüfen ob
-// 4 eindeutige spielerInnennamen vorhanden sind
-document.getElementById('playerNamesForm').addEventListener('keyup', function (evt) {
-    console.log(evt);
-
-    //TODO
-
-})
 
 // formular submit abfangen
 document.getElementById('playerNamesForm').addEventListener('submit', async function (evt) {
@@ -63,7 +57,7 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     // Function to check for duplicate names in an array
 
-    
+
 
     players_global = [document.getElementById("playerName1").value, document.getElementById("playerName2").value, document.getElementById("playerName3").value, document.getElementById("playerName4").value];
 
@@ -86,7 +80,9 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     distributeCards(2, "cards_player3");
     distributeCards(3, "cards_player4");
 
+    showFirstTopCard();
 });
+
 
 /***********************************************/
 // überprüft, ob Namen unique sind
@@ -102,7 +98,7 @@ function hasDuplicates(array) {
 }
 
 /***********************************************/
-// Die URL für die Karten
+// Der Pfad und der String für die Karten
 /***********************************************/
 
 const CardsUrl = "./cardsimg/";
@@ -110,6 +106,7 @@ const CardsUrl = "./cardsimg/";
 function buildSrcString(color, number) {
     return `${CardsUrl}${color + number}.png`;
 }
+
 
 /***********************************************/
 // Zeigt die Spielernamen auf dem Spielfeld an
@@ -121,8 +118,8 @@ function displayplayernames(htmlidname, htmlid_div) {
     let div = document.getElementById(htmlid_div)
     h3.textContent = document.getElementById(htmlidname).value
     div.insertBefore(h3, div.firstChild);
-
 }
+
 
 /***********************************************/
 //Zeigt die Karten der Spieler an
@@ -140,20 +137,32 @@ function distributeCards(playerid, htmlid) {
 
         li.appendChild(span);
         playerlist.appendChild(li);
-        /* span.textContent = "Card: "+
-         result.Players[playerid].Cards[i].Text + " " +
-         result.Players[playerid].Cards[i].Color;
- */
+
         //Image
         const img = document.createElement("img");
         const color = result.Players[playerid].Cards[i].Color;
         const number = result.Players[playerid].Cards[i].Value;
         img.src = buildSrcString(color, number);
-        img.className="card";
+        img.className = "card";
         li.appendChild(img);
         i++;
 
     }
+}
+
+/***********************************************/
+//Zeigt die erste TopCard des Spiels an
+/***********************************************/
+
+function showFirstTopCard() {
+    const TopCardImg = document.createElement("img");
+    const topCardColor = result.TopCard.Color;
+    const topCardNumber = result.TopCard.Value;
+    TopCardImg.src = buildSrcString(topCardColor,topCardNumber);
+    TopCardImg.className = "card";
+    let imgdiv= document.getElementById("TopCardImg");
+    imgdiv.appendChild(TopCardImg);
+    console.log(TopCardImg);
 }
 
 async function startNewGame() {
