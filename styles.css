@@ -1,39 +1,48 @@
-#maincontent{
-    margin-top:50px;
+#maincontent {
+    margin-top: 50px;
     font-family: Alike Angular;
-    color:#ebe6f7;
-    background-color:#071540;
+    color: #ebe6f7;
+    background-color: #071540;
     border-radius: 25px;
 }
 
-h1{
-    margin-bottom: 3rem;
+h1 {
+    margin-bottom: 30px;
     margin-top: 50px;
-    color:#F28705;
-   
-}
-h3{
-    color:#F28705;
-}
-button{
-    margin-top: 20px;
-    margin-bottom: 20px;
-    
-    
+    color: #F28705;
+
 }
 
-#playernamesform{
+h3 {
+    color: #F28705;
+}
+
+button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+
+}
+
+#playernamesform {
     font-family: Alike Angular;
 }
 
-.card{
+.card {
     height: 80px;
 }
 
-#TopCard{
- position: relative;   
- height:120px;
- left: 120px;  
- margin-top: 50px; 
+#TopCard {
+
+    height: 120px;
+    align-self: flex-start;
+
 }
 
+#Drawpile {
+height: 120px;
+align-self: flex-end;    
+}
+#Player2_name_and_cards{
+    margin-top: 50px;
+}

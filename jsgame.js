@@ -3,7 +3,7 @@ let playerList = [];
 
 
 /***********************************************/
-// Modalen Dialog öffnen um Namen einzugeben
+// Modalen Dialog öffnen, um Namen einzugeben
 /***********************************************/
 
 
@@ -95,7 +95,6 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 // überprüft, ob Namen unique sind
 /***********************************************/
 
-
 function hasDuplicates(array) {
 
     const lowerCaseNames = array.map(name => name.toLowerCase());
@@ -173,10 +172,14 @@ function showFirstTopCard() {
     console.log(TopCardImg);
 }
 
+
+/***********************************************/
+//Zeigt die erste das Bild des Abhebestapels an
+/***********************************************/
+
 function showdrawpile(){
     const drawpileimg= document.createElement("img");
     drawpileimg.src= "./cardsimg/back0.png";
-    drawpileimg.className="card";
     drawpileimg.id="Drawpile";
     let div=document.querySelector(".Drawpile");
     div.appendChild(drawpileimg);
