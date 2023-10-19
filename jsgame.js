@@ -18,6 +18,9 @@ let players_global = ["a", "b"];
 
 // formular submit abfangen
 document.getElementById('playerNamesForm').addEventListener('submit', async function (evt) {
+//Startbutton variable
+    let startbutton = document.getElementById('startbutton');
+
     console.log("Spieler hat Button 'Spiel starten' gedrückt!");
     // Formular absenden verhindern
     evt.preventDefault();
@@ -82,6 +85,9 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     showFirstTopCard();
     showdrawpile();
+
+    //Startbutton nach dem Spiel start entfernen
+    startbutton.style.display = 'none';
 });
 
 
