@@ -4,10 +4,12 @@
     color: #ebe6f7;
     background-color: #071540;
     border-radius: 25px;
+    height: 800px;
+    padding-left: 50px;
 }
 
 h1 {
-    margin-bottom: 30px;
+    margin-bottom: 50px;
     margin-top: 50px;
     color: #F28705;
 
@@ -34,15 +36,16 @@ button {
 
 #TopCard {
 
-    height: 120px;
+    height: 110px;
     align-self: flex-start;
 
 }
 
 #Drawpile {
-height: 120px;
+height: 110px;
 align-self: flex-end;    
 }
 #Player2_name_and_cards{
     margin-top: 50px;
 }
+

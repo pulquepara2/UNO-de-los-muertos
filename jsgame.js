@@ -18,7 +18,7 @@ let players_global = ["a", "b"];
 
 // formular submit abfangen
 document.getElementById('playerNamesForm').addEventListener('submit', async function (evt) {
-//Startbutton variable
+    //Startbutton variable
     let startbutton = document.getElementById('startbutton');
 
     console.log("Spieler hat Button 'Spiel starten' gedrückt!");
@@ -150,8 +150,12 @@ function distributeCards(playerid, htmlid) {
         const number = result.Players[playerid].Cards[i].Value;
         img.src = buildSrcString(color, number);
         img.className = "card";
+        img.Color = result.Players[playerid].Cards[i].Color;
+        img.Text = result.Players[playerid].Cards[i].Text;
+        img.Value = result.Players[playerid].Cards[i].Value;
         li.appendChild(img);
         i++;
+        console.log(img);
 
     }
 }
@@ -164,10 +168,10 @@ function showFirstTopCard() {
     const TopCardImg = document.createElement("img");
     const topCardColor = result.TopCard.Color;
     const topCardNumber = result.TopCard.Value;
-    TopCardImg.src = buildSrcString(topCardColor,topCardNumber);
+    TopCardImg.src = buildSrcString(topCardColor, topCardNumber);
     TopCardImg.className = "card";
-    TopCardImg.id="TopCard"
-    let imgdiv= document.getElementById("TopCardImg");
+    TopCardImg.id = "TopCard"
+    let imgdiv = document.getElementById("TopCardImg");
     imgdiv.appendChild(TopCardImg);
     console.log(TopCardImg);
 }
@@ -177,11 +181,11 @@ function showFirstTopCard() {
 //Zeigt die erste das Bild des Abhebestapels an
 /***********************************************/
 
-function showdrawpile(){
-    const drawpileimg= document.createElement("img");
-    drawpileimg.src= "./cardsimg/back0.png";
-    drawpileimg.id="Drawpile";
-    let div=document.querySelector(".Drawpile");
+function showdrawpile() {
+    const drawpileimg = document.createElement("img");
+    drawpileimg.src = "./cardsimg/back0.png";
+    drawpileimg.id = "Drawpile";
+    let div = document.querySelector(".Drawpile");
     div.appendChild(drawpileimg);
 }
 async function startNewGame() {
@@ -200,15 +204,10 @@ async function startNewGame() {
         body: JSON.stringify([
 
             "Player 1",
-
             "PLayer 2",
-
             "Player 3",
-
             "PLayer 4"
-
         ]
-
         ),
 
         headers: {
@@ -235,4 +234,35 @@ async function startNewGame() {
 
     }
 }
+document.getElementsByClassName(".card").addEventListener("click", function(){
+    tryToPlayCard;
+});
+
+async function tryToPlayCard(value, color) {
+
+    let wildcolor = "not used right now";
+    let gameid = result.id;
+
+    oldTopCard = result.TopCard;
+    console.log(oldTopCard);
+
+    let url = `https://nowaunoweb.azurewebsites.net/api/Game/PlayCard/${gameid}?value=${value}&color=${color}&wildColor=${wildColor}`;
+
+    let response = await fetch(url, {
+        method: "PUT", headers: {
+            "Content-type": "application/json; charset=UTF-8",
+        }
+    });
+
+    if (response.ok) {
+        let cardPlayresult = await response.json();
+        console.log("got cardplayresult:");
+        console.log(cardPlayresult);
+        if (cardPlayresult != null) {
+            console.log("Karte spielen erfolgreich");
+
+        }
+    }
+};
+
 
