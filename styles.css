@@ -24,3 +24,7 @@ button{
 #playernamesform{
     font-family: Alike Angular;
 }
+
+.card{
+    height: 80px;
+}

@@ -1,4 +1,5 @@
 let result = Object();
+let playerList = [];
 /***********************************************/
 // Modalen Dialog öffnen um Namen einzugeben
 /***********************************************/
@@ -26,12 +27,43 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     console.log("Spieler hat Button 'Spiel starten' gedrückt!");
     // Formular absenden verhindern
     evt.preventDefault();
-    myModal.hide();
 
-    console.log("Name von Spieler 1: ", document.getElementById("playerName1").value);
-    console.log("Name von Spieler 2: ", document.getElementById("playerName2").value);
-    console.log("Name von Spieler 3: ", document.getElementById("playerName3").value);
-    console.log("Name von Spieler 4: ", document.getElementById("playerName4").value);
+
+    let player1Name = document.getElementById("playerName1").value;
+
+    let player2Name = document.getElementById("playerName2").value;
+
+    let player3Name = document.getElementById("playerName3").value;
+
+    let player4Name = document.getElementById("playerName4").value;
+
+    // Check for empty fields
+
+    if (player1Name == "" || player2Name == "" || player3Name == "" || player4Name == "") {
+
+        alert('Please fill in all fields.');
+
+        return; // Stop form submission
+    }
+
+    // Check for duplicate names
+
+    if (hasDuplicates([player1Name, player2Name, player3Name, player4Name])) {
+
+        alert('Please enter unique names. The same name cannot be used more than once.'); return; // Stop form submission
+
+    }
+
+    //if successful, save names in the player list array
+
+    playerList = [player1Name, player2Name, player3Name, player4Name];
+
+    players_global = [document.getElementById("playerName1").value, document.getElementById("playerName2").value, document.getElementById("playerName3").value, document.getElementById("playerName4").value];
+
+
+    // Function to check for duplicate names in an array
+
+    
 
     players_global = [document.getElementById("playerName1").value, document.getElementById("playerName2").value, document.getElementById("playerName3").value, document.getElementById("playerName4").value];
 
@@ -40,7 +72,7 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     //liste_von_player
     let playerlist = document.getElementById("playerlist");
 
-
+    myModal.hide();
     await startNewGame();
 
     displayplayernames("playerName1", "Player1_name_and_cards");
@@ -57,10 +89,23 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 });
 
 /***********************************************/
+// überprüft, ob Namen unique sind
+/***********************************************/
+
+
+function hasDuplicates(array) {
+
+    const lowerCaseNames = array.map(name => name.toLowerCase());
+
+    return (new Set(lowerCaseNames)).size !== lowerCaseNames.length;
+
+}
+
+/***********************************************/
 // Die URL für die Karten
 /***********************************************/
 
-const CardsUrl = "https://nowaunoweb.azurewebsites.net/Content/Cards/";
+const CardsUrl = "./cardsimg/";
 
 function buildSrcString(color, number) {
     return `${CardsUrl}${color + number}.png`;
@@ -101,9 +146,10 @@ function distributeCards(playerid, htmlid) {
  */
         //Image
         const img = document.createElement("img");
-        const color = result.Players[playerid].Cards[i].Color.charAt(0);
+        const color = result.Players[playerid].Cards[i].Color;
         const number = result.Players[playerid].Cards[i].Value;
         img.src = buildSrcString(color, number);
+        img.className="card";
         li.appendChild(img);
         i++;
 
@@ -160,12 +206,5 @@ async function startNewGame() {
         alert("HTTP-Error: " + response.status);
 
     }
-
 }
 
-function showTopCard(){
-    response = await fetch("https://nowaunoweb.azurewebsites.net/api/game/topCard", {
-        method: 'GET',
-        body
-    )
-}}
