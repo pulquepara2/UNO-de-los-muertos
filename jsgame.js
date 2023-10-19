@@ -81,6 +81,7 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     distributeCards(3, "cards_player4");
 
     showFirstTopCard();
+    showdrawpile();
 });
 
 
@@ -160,11 +161,20 @@ function showFirstTopCard() {
     const topCardNumber = result.TopCard.Value;
     TopCardImg.src = buildSrcString(topCardColor,topCardNumber);
     TopCardImg.className = "card";
+    TopCardImg.id="TopCard"
     let imgdiv= document.getElementById("TopCardImg");
     imgdiv.appendChild(TopCardImg);
     console.log(TopCardImg);
 }
 
+function showdrawpile(){
+    const drawpileimg= document.createElement("img");
+    drawpileimg.src= "./cardsimg/back0.png";
+    drawpileimg.className="card";
+    drawpileimg.id="Drawpile";
+    let div=document.querySelector(".Drawpile");
+    div.appendChild(drawpileimg);
+}
 async function startNewGame() {
 
 
