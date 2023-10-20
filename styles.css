@@ -1,6 +1,6 @@
 #maincontent {
     margin-top: 50px;
-    font-family: Alike Angular;
+    font-family: Alike Angular, Trebuchet MS;
     color: #ebe6f7;
     background-color: #071540;
     border-radius: 25px;
@@ -32,12 +32,14 @@ button {
 
 .card {
     height: 80px;
+    display: flex;
+    
 }
 
 #TopCard {
 
     height: 110px;
-    align-self: flex-start;
+   
 
 }
 
