@@ -64,14 +64,14 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     //if successful, save names in the player list array
 
-    playernames = [document.getElementById("playerName1").value, document.getElementById("playerName2").value, document.getElementById("playerName3").value, document.getElementById("playerName4").value];
+    playerList = [document.getElementById("playerName1").value, document.getElementById("playerName2").value, document.getElementById("playerName3").value, document.getElementById("playerName4").value];
 
     console.log("Spieler: ", playernames);
 
     myModal.hide();
     await startNewGame();
     // connectplayernameswithresultplayerlist();
-    setUpPlayers();
+   // setUpPlayers();
 
     displayplayernames("playerName1", "Player1_name_and_cards");
     displayplayernames("playerName2", "Player2_name_and_cards");
@@ -130,7 +130,7 @@ function displayplayernames(htmlidname, htmlid_div) {
 //Erstellt vier Spielerobjekte
 /********************************************************************/
 
-async function setUpPlayers() {
+/*async function setUpPlayers() {
     for (let i = 0; i < result.Players.length; i++) {
         let player = result.Players[i];
         playerList[i] = new Player(player.Player, player.Cards, player.Score);
@@ -141,6 +141,7 @@ async function setUpPlayers() {
         result.Players[i].Player = clientPlayerNames[i];
     }
 }
+*/
 
 
 /********************************************************************/
@@ -264,14 +265,7 @@ async function startNewGame() {
 
         //post verlangt 4 spieler als rückgabe wert wie in der dokumentation beschrieben
 
-        body: JSON.stringify([
-
-            "Player 1",
-            "PLayer 2",
-            "Player 3",
-            "PLayer 4"
-        ]
-        ),
+        body: JSON.stringify(playerList),
 
         headers: {
 
@@ -300,8 +294,10 @@ async function startNewGame() {
 /*****************************************************************************************************************/
 async function image_clicked(ev) {
 
-    tryToPlayCard(ev.target.CardColor, ev.target.CardValue);
+   await tryToPlayCard(ev.target.CardColor, ev.target.CardValue);
+    
 }
+
 
 
 async function tryToPlayCard(value, color) {
@@ -310,7 +306,7 @@ async function tryToPlayCard(value, color) {
     let gameId = result.Id;
     oldTopCard = result.TopCard;
     console.log(oldTopCard);
-    if (nextPlayer === result.NextPlayer) {
+   // if (nextPlayer === result.NextPlayer) {
         let url = `https://nowaunoweb.azurewebsites.net/api/Game/PlayCard/${gameId}?value=${value}&color=${color}&wildColor=${wildColor}`;
 
         let response = await fetch(url, {
@@ -333,9 +329,18 @@ async function tryToPlayCard(value, color) {
             alert("HTTP-Error: " + response.status);
 
         }
-    } else {
+ /*   } else {
         alert("It's not your turn to play!");
     }
+    */
 };
 
+
+function removeCardFromPlayersHand(){
+   
+}
+
+function updateTopCard(){
+
+}
 
