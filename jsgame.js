@@ -1,6 +1,7 @@
 let result = Object();
 let playerList = [];
 let currentPlayer = Object();
+let direction = 1;
 
 
 /***********************************************/
@@ -23,8 +24,6 @@ document.getElementById("startbutton").addEventListener("click", function () {
 
     myModal.show();
 })
-
-let playernames = ["a", "b"];
 
 
 // formular submit abfangen
@@ -66,12 +65,10 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     playerList = [document.getElementById("playerName1").value, document.getElementById("playerName2").value, document.getElementById("playerName3").value, document.getElementById("playerName4").value];
 
-    console.log("Spieler: ", playernames);
-
     myModal.hide();
     await startNewGame();
-    // connectplayernameswithresultplayerlist();
-   // setUpPlayers();
+    
+    setUpPlayers();
 
     displayplayernames("playerName1", "Player1_name_and_cards");
     displayplayernames("playerName2", "Player2_name_and_cards");
@@ -118,7 +115,7 @@ function buildSrcString(color, number) {
 // Zeigt die Spielernamen auf dem Spielfeld an
 /***********************************************/
 
-function displayplayernames(htmlidname, htmlid_div) {
+async function displayplayernames(htmlidname, htmlid_div) {
 
     let h3 = document.createElement("h4");
     let div = document.getElementById(htmlid_div)
@@ -130,63 +127,32 @@ function displayplayernames(htmlidname, htmlid_div) {
 //Erstellt vier Spielerobjekte
 /********************************************************************/
 
-/*async function setUpPlayers() {
+async function setUpPlayers() {
     for (let i = 0; i < result.Players.length; i++) {
         let player = result.Players[i];
         playerList[i] = new Player(player.Player, player.Cards, player.Score);
     }
-    // Map the client-side names to server-side names
-    const clientPlayerNames = [document.getElementById("playerName1").value, document.getElementById("playerName2").value, document.getElementById("playerName3").value, document.getElementById("playerName4").value];
-    for (let i = 0; i < clientPlayerNames.length; i++) {
-        result.Players[i].Player = clientPlayerNames[i];
-    }
-}
-*/
+   
 
+}
 
 /********************************************************************/
-// Ermittelt den nächsten Spieler
+// Ermittelt den index des aktuellen Spielers
 /********************************************************************/
-/*let serverNextPlayer = result.NextPlayer;
-function findNextPlayer(serverNextPlayer, playerList) {
-    // Map the server-side name to the corresponding client-side name
-    let mappedServerNextPlayer = mapServerNameToClientName(serverNextPlayer, clientPlayerNames);
-    
-    // Now compare it with the current user's name
-    if (mappedServerNextPlayer === clientPlayerNames[0]) {
-        return playerList[0];
-    } else if (mappedServerNextPlayer === clientPlayerNames[1]) {
-        return playerList[1];
-    } else if (mappedServerNextPlayer === clientPlayerNames[2]) {
-        return playerList[2];
-    } else if (mappedServerNextPlayer === clientPlayerNames[3]) {
-        return playerList[3];
-    }
-    return null; // Return null if the player is not found
-}
-
-function mapServerNameToClientName(serverName, playernames) {
-    // Implement your logic to map server names to client names here
-    // For simplicity, I'm assuming a straightforward mapping.
-    // You need to customize this according to your mapping logic.
-    return serverName;
-}
-
-/*function findNextPlayer(serverNextPlayer, playerList) {
-    for (let i = 0; i < playerList.length; i++) {
-        if (playerList[i].Name === serverNextPlayer) {
-            return playerList[i];
+function getIndexOfCurrentPlayer(response) {
+    for (let playerIndex = 0; playerIndex <= 3; playerIndex++) {
+        if (response.Player === playerList[playerIndex].Name) {
+            return playerIndex;
         }
     }
-    return null; // Return null if the player is not found
-}
-*/
+};
+
 
 /**********************************************************************************************/
 //Zeigt die Karten der Spieler an, hier wird auch der Eventlistener für die Karten hinzugefügt
 /*********************************************************************************************/
 
-function distributeCards(playerid, htmlid) {
+async function distributeCards(playerid, htmlid) {
     let playerlist = document.getElementById(htmlid);
     let i = 0;
     while (i < result.Players[playerid].Cards.length) {
@@ -229,7 +195,7 @@ function distributeCards(playerid, htmlid) {
 //Zeigt die erste TopCard des Spiels an
 /***********************************************/
 
-function showFirstTopCard() {
+async function showFirstTopCard() {
     const TopCardImg = document.createElement("img");
     const topCardColor = result.TopCard.Color;
     const topCardNumber = result.TopCard.Value;
@@ -245,7 +211,7 @@ function showFirstTopCard() {
 //Zeigt das Bild des Abhebestapels an
 /***********************************************/
 
-function showdrawpile() {
+async function showdrawpile() {
     const drawpileimg = document.createElement("img");
     drawpileimg.src = "./cardsimg/back0.png";
     drawpileimg.id = "Drawpile";
@@ -277,8 +243,8 @@ async function startNewGame() {
         // wir lesen den response body
 
         result = await response.json(); // alternativ response.text wenn nicht json gewünscht ist
-        currentPlayer= result.NextPlayer;
-        console.log("current player: " + currentPlayer);	    
+        currentPlayer = result.NextPlayer;
+        console.log("current player: " + currentPlayer);
         console.log(result);
 
     } else {
@@ -294,54 +260,42 @@ async function startNewGame() {
 /*****************************************************************************************************************/
 async function image_clicked(ev) {
 
-   await tryToPlayCard(ev.target.CardColor, ev.target.CardValue);
-    
+    tryToPlayCard(ev.target.CardColor, ev.target.CardValue);
+
 };
-
-
 
 async function tryToPlayCard(value, color) {
-  //  nextPlayer = findNextPlayer(serverNextPlayer, playerList);
     let wildColor = "not used right now";
     let gameId = result.Id;
-    oldTopCard = result.TopCard;
-    console.log(oldTopCard);
-   // if (nextPlayer === result.NextPlayer) {
-        let url = `https://nowaunoweb.azurewebsites.net/api/Game/PlayCard/${gameId}?value=${value}&color=${color}&wildColor=${wildColor}`;
 
-        let response = await fetch(url, {
-            method: "PUT", headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            }
-        });
+    let url = `https://nowaunoweb.azurewebsites.net/api/Game/PlayCard/${gameId}?value=${value}&color=${color}&wildColor=${wildColor}`;
 
-        if (response.ok) {
-            let cardPlayresult = await response.json();
-            console.log("got cardplayresult:");
-            console.log(cardPlayresult);
-            console.log("next player is:"+currentPlayer);
-            if (cardPlayresult != null) {
-                console.log("Karte spielen erfolgreich");
-
-            }
+    let response = await fetch(url, {
+        method: "PUT",
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
         }
-        else {
 
-            alert("HTTP-Error: " + response.status);
+    });
 
-        }
- /*   } else {
-        alert("It's not your turn to play!");
+    if (response.ok) {
+        let cardPlayresult = await response.json();
+        console.log("got cardplayresult:");
+        console.log(cardPlayresult);
     }
-    */
+    else {
+
+        alert("HTTP-Error: " + response.status);
+
+    }
 };
 
 
-function removeCardFromPlayersHand(){
-   
+function removeCardFromPlayersHand() {
+
 }
 
-function updateTopCard(){
+function updateTopCard() {
 
 }
 
