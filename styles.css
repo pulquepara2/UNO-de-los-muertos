@@ -15,7 +15,7 @@ h1 {
 
 }
 
-h3 {
+h4 {
     color: #F28705;
 }
 
@@ -32,22 +32,22 @@ button {
 
 .card {
     height: 80px;
-    display: flex;
-    
 }
 
 #TopCard {
-
     height: 110px;
-   
-
 }
 
 #Drawpile {
-height: 110px;
-align-self: flex-end;    
+    height: 110px;
+    align-self: flex-end;
 }
-#Player2_name_and_cards{
+
+#Player2_name_and_cards {
     margin-top: 50px;
 }
 
+.card:hover {
+    transform: scale(1.2);
+    cursor: grab;
+}

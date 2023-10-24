@@ -1,6 +1,6 @@
 let result = Object();
 let playerList = [];
-let nextPlayer;
+let currentPlayer = Object();
 
 
 /***********************************************/
@@ -120,7 +120,7 @@ function buildSrcString(color, number) {
 
 function displayplayernames(htmlidname, htmlid_div) {
 
-    let h3 = document.createElement("h3");
+    let h3 = document.createElement("h4");
     let div = document.getElementById(htmlid_div)
     h3.textContent = document.getElementById(htmlidname).value
     div.insertBefore(h3, div.firstChild);
@@ -234,7 +234,6 @@ function showFirstTopCard() {
     const topCardColor = result.TopCard.Color;
     const topCardNumber = result.TopCard.Value;
     TopCardImg.src = buildSrcString(topCardColor, topCardNumber);
-    TopCardImg.className = "card";
     TopCardImg.id = "TopCard"
     let imgdiv = document.getElementById("TopCardImg");
     imgdiv.appendChild(TopCardImg);
@@ -252,7 +251,7 @@ function showdrawpile() {
     drawpileimg.id = "Drawpile";
     let div = document.querySelector(".Drawpile");
     div.appendChild(drawpileimg);
-}
+};
 
 
 async function startNewGame() {
@@ -278,7 +277,8 @@ async function startNewGame() {
         // wir lesen den response body
 
         result = await response.json(); // alternativ response.text wenn nicht json gewünscht ist
-
+        currentPlayer= result.NextPlayer;
+        console.log("current player: " + currentPlayer);	    
         console.log(result);
 
     } else {
@@ -286,7 +286,7 @@ async function startNewGame() {
         alert("HTTP-Error: " + response.status);
 
     }
-}
+};
 
 
 /*****************************************************************************************************************/
@@ -296,7 +296,7 @@ async function image_clicked(ev) {
 
    await tryToPlayCard(ev.target.CardColor, ev.target.CardValue);
     
-}
+};
 
 
 
@@ -319,6 +319,7 @@ async function tryToPlayCard(value, color) {
             let cardPlayresult = await response.json();
             console.log("got cardplayresult:");
             console.log(cardPlayresult);
+            console.log("next player is:"+currentPlayer);
             if (cardPlayresult != null) {
                 console.log("Karte spielen erfolgreich");
 
