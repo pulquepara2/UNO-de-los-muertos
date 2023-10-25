@@ -63,8 +63,12 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     //if successful, save names in the player list array
 
-    playerList = [document.getElementById("playerName1").value, document.getElementById("playerName2").value, document.getElementById("playerName3").value, document.getElementById("playerName4").value];
-
+   // playerList = [document.getElementById("playerName1").value, document.getElementById("playerName2").value, document.getElementById("playerName3").value, document.getElementById("playerName4").value];
+    playerList.push(player1Name);
+    playerList.push(player2Name);
+    playerList.push(player3Name);
+    playerList.push(player4Name);
+    
     myModal.hide();
     await startNewGame();
     
@@ -260,7 +264,7 @@ async function startNewGame() {
 /*****************************************************************************************************************/
 async function image_clicked(ev) {
 
-    tryToPlayCard(ev.target.CardColor, ev.target.CardValue);
+    tryToPlayCard(ev.target.CardValue,ev.target.CardColor);
 
 };
 
