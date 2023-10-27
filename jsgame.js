@@ -1,7 +1,8 @@
 let result = Object();
 let playerList = [];
 let playernames = [];
-let currentPlayer = Object();
+let nextPlayer;
+let currentPlayer;
 let direction = 1;
 
 
@@ -74,12 +75,6 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     //if successful, save names in the player list array
 
-    /*/  playerList.push(player1Name);
-      playerList.push(player2Name);
-      playerList.push(player3Name);
-      playerList.push(player4Name);
-      console.log(playerList);
-      */
     playernames = [player1Name, player2Name, player3Name, player4Name];
     console.log(playernames);
 
@@ -88,6 +83,7 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     await startNewGame();
 
     setUpPlayers();
+    currentPlayer = playerList[0];
 
     await displayplayernames("playerName1", "Player1_name_and_cards");
     await displayplayernames("playerName2", "Player2_name_and_cards");
@@ -149,21 +145,21 @@ async function displayplayernames(htmlidname, htmlid_div) {
 /********************************************************************/
 
 async function setUpPlayers() {
-    
+
     for (let i = 0; i < result.Players.length; i++) {
         let player = result.Players[i];
-        player.Name= playernames[i];
+        player.Name = playernames[i];
         playerList[i] = new Player(player.Name, player.Cards, player.Score);
     }
 }
 
 /********************************************************************
-// Ermittelt den index des aktuellen Spielers
+// Ermittelt den index des nächsten Spielers
 /********************************************************************/
-function getIndexOfCurrentPlayer(resp) {
+function getIndexOfNextPlayer(resp) {
     let name = resp.Player;
-    for (let i = 0; i <= 3; i++) {
-        if (name === playerList[i].Name) {
+    for (let i = 0; i < playerList.length; i++) {
+        if (name == playerList[i].Name) {
             return i;
         }
     }
@@ -276,10 +272,10 @@ async function startNewGame() {
         // wir lesen den response body
 
         result = await response.json(); // alternativ response.text wenn nicht json gewünscht ist
-        currentPlayer = result.NextPlayer;
-        console.log("current player: " + currentPlayer);
+       /* currentPlayer = result.NextPlayer;
+        console.log("next player: " + currentPlayer);
         console.log(result);
-
+*/
     } else {
 
         alert("HTTP-Error: " + response.status);
@@ -308,7 +304,6 @@ async function tryToPlayCard(value, color) {
         headers: {
             "Content-type": "application/json; charset=UTF-8",
         }
-
     });
 
     if (response.ok) {
@@ -316,29 +311,28 @@ async function tryToPlayCard(value, color) {
         console.log("got cardplayresult:");
         console.log(cardPlayresult);
         if (!cardPlayresult.error) {
-            let curr = playerList[getIndexOfCurrentPlayer(response)];
-            removeCardFromPlayersHand(curr);
-
+            console.log("Current Player: " + currentPlayer.Name);
+            await removeCardFromPlayersHand(currentPlayer, value, color);
+            currentPlayer = playerList[getIndexOfNextPlayer(cardPlayresult)]; // Update the current player
+            console.log("updated currentplayer: " + currentPlayer.Name)
         }
-    }
-    else {
-
+    } else {
         alert("HTTP-Error: " + response.status);
-
     }
-};
+}
 
 
-function removeCardFromPlayersHand(currentplayer, value, color) {
 
-    let cardsOfCurrentPlayer = currentplayer.Cards;
-    console.log("Karten von " + currentplayer.Name + " vor entfernen: " + cardsOfCurrentPlayer);
+async function removeCardFromPlayersHand(value, color) {
+    console.log(currentPlayer);
+    let cardsOfCurrentPlayer = currentPlayer.Cards;
+    console.log("Karten von " + currentPlayer.Name + " vor entfernen: " + cardsOfCurrentPlayer);
     for (let i = 0; i < cardsOfCurrentPlayer.length; i++) {
         if (value == cardsOfCurrentPlayer[i].CardValue && color == cardsOfCurrentPlayer[i].CardColor) {
             cardsOfCurrentPlayer.splice(0, i);
         }
     }
-    console.log("Karten von " + currentplayer.Name + " nach entfernen: " + cardsOfCurrentPlayer);
+    console.log("Karten von " + currentPlayer.Name + " nach entfernen: " + cardsOfCurrentPlayer);
 }
 
 function updateTopCard() {
