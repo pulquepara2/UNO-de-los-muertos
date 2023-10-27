@@ -1,5 +1,6 @@
 let result = Object();
 let playerList = [];
+let playernames = [];
 let currentPlayer = Object();
 let direction = 1;
 
@@ -11,6 +12,16 @@ let direction = 1;
 function Player(name, cards = [], score = 0) {
     this.Name = name;
     this.Cards = cards;
+    this.Score = score;
+}
+
+/***********************************************/
+// Konstruktor-Funktion für die Karten 
+/***********************************************/
+function Card(color, text, value, score) {
+    this.Color = color;
+    this.Text = text;
+    this.Value = value;
     this.Score = score;
 }
 
@@ -63,28 +74,33 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     //if successful, save names in the player list array
 
-   // playerList = [document.getElementById("playerName1").value, document.getElementById("playerName2").value, document.getElementById("playerName3").value, document.getElementById("playerName4").value];
-    playerList.push(player1Name);
-    playerList.push(player2Name);
-    playerList.push(player3Name);
-    playerList.push(player4Name);
-    
+    /*/  playerList.push(player1Name);
+      playerList.push(player2Name);
+      playerList.push(player3Name);
+      playerList.push(player4Name);
+      console.log(playerList);
+      */
+    playernames = [player1Name, player2Name, player3Name, player4Name];
+    console.log(playernames);
+
     myModal.hide();
+
     await startNewGame();
-    
+
     setUpPlayers();
 
-    displayplayernames("playerName1", "Player1_name_and_cards");
-    displayplayernames("playerName2", "Player2_name_and_cards");
-    displayplayernames("playerName3", "Player3_name_and_cards");
-    displayplayernames("playerName4", "Player4_name_and_cards");
+    await displayplayernames("playerName1", "Player1_name_and_cards");
+    await displayplayernames("playerName2", "Player2_name_and_cards");
+    await displayplayernames("playerName3", "Player3_name_and_cards");
+    await displayplayernames("playerName4", "Player4_name_and_cards");
 
-    distributeCards(0, "cards_player1");
-    distributeCards(1, "cards_player2");
-    distributeCards(2, "cards_player3");
-    distributeCards(3, "cards_player4");
+    await distributeCards(0, "cards_player1");
+    await distributeCards(1, "cards_player2");
+    await distributeCards(2, "cards_player3");
+    await distributeCards(3, "cards_player4");
 
     showFirstTopCard();
+
     showdrawpile();
 
     //Startbutton nach dem Spielstart entfernen
@@ -128,29 +144,42 @@ async function displayplayernames(htmlidname, htmlid_div) {
 }
 
 /********************************************************************/
-//Erstellt vier Spielerobjekte
+//Erstellt vier Spielerobjekte mit den im Modal eingegebenen Namen
+//und den von den Server bereitgestellen Karten und Score
 /********************************************************************/
 
 async function setUpPlayers() {
+    
     for (let i = 0; i < result.Players.length; i++) {
         let player = result.Players[i];
-        playerList[i] = new Player(player.Player, player.Cards, player.Score);
+        player.Name= playernames[i];
+        playerList[i] = new Player(player.Name, player.Cards, player.Score);
     }
-   
-
 }
 
-/********************************************************************/
+/********************************************************************
 // Ermittelt den index des aktuellen Spielers
 /********************************************************************/
-function getIndexOfCurrentPlayer(response) {
-    for (let playerIndex = 0; playerIndex <= 3; playerIndex++) {
-        if (response.Player === playerList[playerIndex].Name) {
-            return playerIndex;
+function getIndexOfCurrentPlayer(resp) {
+    let name = resp.Player;
+    for (let i = 0; i <= 3; i++) {
+        if (name === playerList[i].Name) {
+            return i;
         }
     }
 };
 
+/********************************************************************
+// Ermittelt den index der gesuchten Karte
+/********************************************************************/
+function getIndexOfCard(playerindex, card) {
+    for (let cardId = 0; cardId < playerList[playerindex].Cards.length; cardId++) {
+        if (playerList[playerindex].Cards[cardId].Color === card.Color && playerList[playerindex].Cards[cardId].Value === card.Value) {
+            return cardId;
+        }
+    }
+
+}
 
 /**********************************************************************************************/
 //Zeigt die Karten der Spieler an, hier wird auch der Eventlistener für die Karten hinzugefügt
@@ -234,7 +263,7 @@ async function startNewGame() {
 
         //post verlangt 4 spieler als rückgabe wert wie in der dokumentation beschrieben
 
-        body: JSON.stringify(playerList),
+        body: JSON.stringify(playernames),
 
         headers: {
 
@@ -264,7 +293,7 @@ async function startNewGame() {
 /*****************************************************************************************************************/
 async function image_clicked(ev) {
 
-    tryToPlayCard(ev.target.CardValue,ev.target.CardColor);
+    tryToPlayCard(ev.target.CardValue, ev.target.CardColor);
 
 };
 
@@ -286,6 +315,11 @@ async function tryToPlayCard(value, color) {
         let cardPlayresult = await response.json();
         console.log("got cardplayresult:");
         console.log(cardPlayresult);
+        if (!cardPlayresult.error) {
+            let curr = playerList[getIndexOfCurrentPlayer(response)];
+            removeCardFromPlayersHand(curr);
+
+        }
     }
     else {
 
@@ -295,8 +329,16 @@ async function tryToPlayCard(value, color) {
 };
 
 
-function removeCardFromPlayersHand() {
+function removeCardFromPlayersHand(currentplayer, value, color) {
 
+    let cardsOfCurrentPlayer = currentplayer.Cards;
+    console.log("Karten von " + currentplayer.Name + " vor entfernen: " + cardsOfCurrentPlayer);
+    for (let i = 0; i < cardsOfCurrentPlayer.length; i++) {
+        if (value == cardsOfCurrentPlayer[i].CardValue && color == cardsOfCurrentPlayer[i].CardColor) {
+            cardsOfCurrentPlayer.splice(0, i);
+        }
+    }
+    console.log("Karten von " + currentplayer.Name + " nach entfernen: " + cardsOfCurrentPlayer);
 }
 
 function updateTopCard() {
