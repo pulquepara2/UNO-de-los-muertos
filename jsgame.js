@@ -1,10 +1,9 @@
-let result = Object();
+let gameId;
 let playerList = [];
 let playernames = [];
 let nextPlayer;
 let currentPlayer;
 let direction = 1;
-let firstPlayersTurn = false;
 
 
 /***********************************************/
@@ -81,24 +80,27 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     myModal.hide();
 
-    await startNewGame();
+    let result = await startNewGame();
+    gameId = result.Id;
 
-    setUpPlayers();
+    setUpPlayers(result.Players);
+    currentPlayer = playerList[getIndexOfPlayerByName(result.NextPlayer)]; 
+    console.log("next player: " + currentPlayer.Name);
 
-    await displayplayernames("playerName1", "Player1_name_and_cards");
-    await displayplayernames("playerName2", "Player2_name_and_cards");
-    await displayplayernames("playerName3", "Player3_name_and_cards");
-    await displayplayernames("playerName4", "Player4_name_and_cards");
+    displayplayernames("playerName1", "Player1_name_and_cards");
+    displayplayernames("playerName2", "Player2_name_and_cards");
+    displayplayernames("playerName3", "Player3_name_and_cards");
+    displayplayernames("playerName4", "Player4_name_and_cards");
 
-    await distributeCards(0, "cards_player0");
-    await distributeCards(1, "cards_player1");
-    await distributeCards(2, "cards_player2");
-    await distributeCards(3, "cards_player3");
+    distributeCards(0, "cards_player1");
+    distributeCards(1, "cards_player2");
+    distributeCards(2, "cards_player3");
+    distributeCards(3, "cards_player4");
 
-    showFirstTopCard();
+    setTopCard(result.TopCard.Value, result.TopCard.Color,);
 
     showdrawpile();
-    firstPlayersTurn = true;
+
     //Startbutton nach dem Spielstart entfernen
     startbutton.style.display = 'none';
 });
@@ -131,7 +133,7 @@ function buildSrcString(color, number) {
 // Zeigt die Spielernamen auf dem Spielfeld an
 /***********************************************/
 
-async function displayplayernames(htmlidname, htmlid_div) {
+function displayplayernames(htmlidname, htmlid_div) {
 
     let h3 = document.createElement("h4");
     let div = document.getElementById(htmlid_div)
@@ -144,20 +146,19 @@ async function displayplayernames(htmlidname, htmlid_div) {
 //und den von den Server bereitgestellen Karten und Score
 /********************************************************************/
 
-async function setUpPlayers() {
+function setUpPlayers(Players) {
 
-    for (let i = 0; i < result.Players.length; i++) {
-        let player = result.Players[i];
+    for (let i = 0; i < Players.length; i++) {
+        let player = Players[i];
         player.Name = playernames[i];
         playerList[i] = new Player(player.Name, player.Cards, player.Score);
     }
 }
-/********************************************************************
-// Ermittelt den index des ersten Spielers
-/********************************************************************/
 
-function getIndexOfFirstPlayer(result) {
-    let name = result.NextPlayer;
+/********************************************************************
+// Ermittelt den index des nächsten Spielers
+/********************************************************************/
+function getIndexOfPlayerByName(name) {
     for (let i = 0; i < playerList.length; i++) {
         if (name == playerList[i].Name) {
             return i;
@@ -166,33 +167,11 @@ function getIndexOfFirstPlayer(result) {
 };
 
 /********************************************************************
-// Ermittelt den index des nächsten Spielers
-/********************************************************************/
-function getIndexOfNextPlayer(resp) {
-    if (resp === result) { //wenn es sich um den allerersten Spieler handelt
-        let name = result.NextPlayer;
-        for (let i = 0; i < playerList.length; i++) {
-            if (name == playerList[i].Name) {
-                return i;
-            }
-        }
-    }
-    else {
-        let name = resp.Player;
-        for (let i = 0; i < playerList.length; i++) {
-            if (name == playerList[i].Name) {
-                return i;
-            }
-        }
-    }
-};
-
-/********************************************************************
 // Ermittelt den index der gesuchten Karte
 /********************************************************************/
-function getIndexOfCard(playerindex, Card) {
+function getIndexOfCard(playerindex, card) {
     for (let cardId = 0; cardId < playerList[playerindex].Cards.length; cardId++) {
-        if (playerList[playerindex].Cards[cardId].Color === Card.Color && playerList[playerindex].Cards[cardId].Value === Card.Value) {
+        if (playerList[playerindex].Cards[cardId].Color === card.Color && playerList[playerindex].Cards[cardId].Value === card.Value) {
             return cardId;
         }
     }
@@ -203,10 +182,10 @@ function getIndexOfCard(playerindex, Card) {
 //Zeigt die Karten der Spieler an, hier wird auch der Eventlistener für die Karten hinzugefügt
 /*********************************************************************************************/
 
-async function distributeCards(playerid, htmlid) {
-    let playerlist = document.getElementById(htmlid);
+function distributeCards(playerid, htmlid) {
+    let playerlistHtml = document.getElementById(htmlid);
     let i = 0;
-    while (i < result.Players[playerid].Cards.length) {
+    while (i < playerList[playerid].Cards.length) {
 
         const li = document.createElement("li");
 
@@ -214,13 +193,13 @@ async function distributeCards(playerid, htmlid) {
 
         li.appendChild(span);
 
-        playerlist.appendChild(li);
+        playerlistHtml.appendChild(li);
 
         const img = document.createElement("img");
 
-        const color = result.Players[playerid].Cards[i].Color;
+        const color = playerList[playerid].Cards[i].Color;
 
-        const number = result.Players[playerid].Cards[i].Value;
+        const number = playerList[playerid].Cards[i].Value;
 
         img.src = buildSrcString(color, number);
 
@@ -228,11 +207,11 @@ async function distributeCards(playerid, htmlid) {
 
         img.addEventListener("click", image_clicked, false);
 
-        img.CardColor = result.Players[playerid].Cards[i].Color;
+        img.CardColor = playerList[playerid].Cards[i].Color;
 
-        img.Text = result.Players[playerid].Cards[i].Text;
+        img.Text = playerList[playerid].Cards[i].Text;
 
-        img.CardValue = result.Players[playerid].Cards[i].Value;
+        img.CardValue = playerList[playerid].Cards[i].Value;
 
         li.appendChild(img);
 
@@ -243,18 +222,12 @@ async function distributeCards(playerid, htmlid) {
 
 
 /***********************************************/
-//Zeigt die erste TopCard des Spiels an
+// Setzt die TopCard 
 /***********************************************/
 
-async function showFirstTopCard() {
-    const TopCardImg = document.createElement("img");
-    const topCardColor = result.TopCard.Color;
-    const topCardNumber = result.TopCard.Value;
-    TopCardImg.src = buildSrcString(topCardColor, topCardNumber);
-    TopCardImg.id = "TopCard"
-    let imgdiv = document.getElementById("TopCardImg");
-    imgdiv.appendChild(TopCardImg);
-    console.log(TopCardImg);
+function setTopCard(value, color) {
+    const TopCardImg = document.getElementById("TopCard");
+    TopCardImg.src = buildSrcString(color, value);
 }
 
 
@@ -262,12 +235,9 @@ async function showFirstTopCard() {
 //Zeigt das Bild des Abhebestapels an
 /***********************************************/
 
-async function showdrawpile() {
-    const drawpileimg = document.createElement("img");
+function showdrawpile() {
+    const drawpileimg = document.getElementById("Drawpile");
     drawpileimg.src = "./cardsimg/back0.png";
-    drawpileimg.id = "Drawpile";
-    let div = document.querySelector(".Drawpile");
-    div.appendChild(drawpileimg);
 };
 
 
@@ -293,11 +263,7 @@ async function startNewGame() {
 
         // wir lesen den response body
 
-        result = await response.json(); // alternativ response.text wenn nicht json gewünscht ist
-        currentPlayer = result.NextPlayer;
-        console.log("first player: " + currentPlayer);
-        console.log(result);
-
+        return await response.json(); // alternativ response.text wenn nicht json gewünscht ist        
     } else {
 
         alert("HTTP-Error: " + response.status);
@@ -309,7 +275,7 @@ async function startNewGame() {
 /*****************************************************************************************************************/
 //hier wird die Funktion trytoplaycard aufgerufen und ihr werden Color und Value der angeklickten Karte übergeben
 /*****************************************************************************************************************/
-async function image_clicked(ev) {
+function image_clicked(ev) {
 
     tryToPlayCard(ev.target.CardValue, ev.target.CardColor);
 
@@ -317,7 +283,6 @@ async function image_clicked(ev) {
 
 async function tryToPlayCard(value, color) {
     let wildColor = "not used right now";
-    let gameId = result.Id;
 
     let url = `https://nowaunoweb.azurewebsites.net/api/Game/PlayCard/${gameId}?value=${value}&color=${color}&wildColor=${wildColor}`;
 
@@ -333,61 +298,72 @@ async function tryToPlayCard(value, color) {
         console.log("got cardplayresult:");
         console.log(cardPlayresult);
         if (!cardPlayresult.error) {
-            if (firstPlayersTurn) {
-                currentPlayer = playerList[getIndexOfNextPlayer(result)];
-                console.log("Current Player: " + currentPlayer.Name);
-                await removeCardFromPlayersHand(currentPlayer, value, color);
-                currentPlayer = playerList[getIndexOfNextPlayer(cardPlayresult)]; // Update the current player
-                console.log("updated currentplayer: " + currentPlayer.Name);
-                firstPlayersTurn =false;
-            }
-            else {
-                console.log("Current Player: " + currentPlayer.Name);
-                await removeCardFromPlayersHand(currentPlayer, value, color);
-                currentPlayer = playerList[getIndexOfNextPlayer(cardPlayresult)]; // Update the current player
-                console.log("updated currentplayer: " + currentPlayer.Name);
-            }
-
+            console.log("Current Player: " + currentPlayer.Name);
+            removeCardFromPlayersHand(value, color);
+            setTopCard(value, color);
+            currentPlayer = playerList[getIndexOfPlayerByName(cardPlayresult.Player)];  // Update the current player
+            console.log("updated currentplayer: " + currentPlayer.Name)
+            //draw2 : 2x drawcard()
         }
     } else {
         alert("HTTP-Error: " + response.status);
     }
 }
 
-async function removeCardFromPlayersHand(currentPlayer, value, color) {
-
+function removeCardFromPlayersHand(value, color) {
+    console.log(currentPlayer);
     let cardsOfCurrentPlayer = currentPlayer.Cards;
     console.log("Karten von " + currentPlayer.Name + " vor entfernen: " + cardsOfCurrentPlayer);
-
     for (let i = 0; i < cardsOfCurrentPlayer.length; i++) {
         if (value == cardsOfCurrentPlayer[i].Value && color == cardsOfCurrentPlayer[i].Color) {
-            const currentPlayerIndex = playerList.indexOf(currentPlayer);
-            cardsOfCurrentPlayer.splice(i, 1);
-            console.log("currentPlayerIndex: " + currentPlayerIndex); // Log to verify the index
-            removeCardUI(value, color, currentPlayerIndex);
+            cardsOfCurrentPlayer.splice(i, 1); // remove 1 item starting at index i
         }
     }
-
     console.log("Karten von " + currentPlayer.Name + " nach entfernen: " + cardsOfCurrentPlayer);
+    let playerIndex = getIndexOfPlayerByName(currentPlayer.Name);
+    updateHtml(playerIndex);
 }
 
+function updateHtml(playerIndex) {
+    // remove old cards
+    removeCards("cards_player" + (playerIndex + 1));
+    //draw new cards
+    distributeCards(playerIndex, "cards_player" + (playerIndex + 1));
+}
 
-async function removeCardUI(value, color, playerIndex) {
-    const ulId = `cards_player${playerIndex}`;
-    const ulElement = document.getElementById(ulId);
-    const cardElements = Array(ulElement.querySelectorAll("*"));
-    console.log(cardElements);
-    for (let i = 0; i < cardElements.length; i++) {
-        {
-            console.log(cardElements[i].img);
-            //ulId.removeChild(cardElements[i]);
-        }
+function removeCards(htmlId) {
+    const playerCardsElement = document.getElementById(htmlId);
+    while (playerCardsElement.firstChild) {
+        playerCardsElement.removeChild(playerCardsElement.firstChild);
     }
-    //  (`[data-value="${value}"][data-color="${color}"]`);
-
 }
 
-function updateTopCard() {
+async function drawCard() {
+    let url = `https://nowaunoweb.azurewebsites.net/api/Game/drawCard/${gameId}`;
 
+    let response = await fetch(url, {
+        method: "PUT",
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+        }
+    });
+
+    if (response.ok) {
+        let drawCardResult = await response.json();
+        console.log("got drawCard result:");
+        console.log(drawCardResult);
+        if (!drawCardResult.error) {
+            addCardToPlayersHand(drawCardResult.Card);
+            currentPlayer = playerList[getIndexOfPlayerByName(drawCardResult.NextPlayer)];  // Update the current player
+            console.log("updated currentplayer: " + currentPlayer.Name)
+        }
+    } else {
+        alert("HTTP-Error: " + response.status);
+    }
 }
 
+function addCardToPlayersHand(Card) {
+    currentPlayer.Cards.push(Card);
+    const playerIndex = getIndexOfPlayerByName(currentPlayer.Name);
+    updateHtml(playerIndex);
+}
