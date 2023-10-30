@@ -4,6 +4,7 @@ let playernames = [];
 let nextPlayer;
 let currentPlayer;
 let direction = 1;
+let firstPlayersTurn = false;
 
 
 /***********************************************/
@@ -83,22 +84,21 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     await startNewGame();
 
     setUpPlayers();
-    currentPlayer = playerList[0];
 
     await displayplayernames("playerName1", "Player1_name_and_cards");
     await displayplayernames("playerName2", "Player2_name_and_cards");
     await displayplayernames("playerName3", "Player3_name_and_cards");
     await displayplayernames("playerName4", "Player4_name_and_cards");
 
-    await distributeCards(0, "cards_player1");
-    await distributeCards(1, "cards_player2");
-    await distributeCards(2, "cards_player3");
-    await distributeCards(3, "cards_player4");
+    await distributeCards(0, "cards_player0");
+    await distributeCards(1, "cards_player1");
+    await distributeCards(2, "cards_player2");
+    await distributeCards(3, "cards_player3");
 
     showFirstTopCard();
 
     showdrawpile();
-
+    firstPlayersTurn = true;
     //Startbutton nach dem Spielstart entfernen
     startbutton.style.display = 'none';
 });
@@ -152,12 +152,12 @@ async function setUpPlayers() {
         playerList[i] = new Player(player.Name, player.Cards, player.Score);
     }
 }
-
 /********************************************************************
-// Ermittelt den index des nächsten Spielers
+// Ermittelt den index des ersten Spielers
 /********************************************************************/
-function getIndexOfNextPlayer(resp) {
-    let name = resp.Player;
+
+function getIndexOfFirstPlayer(result) {
+    let name = result.NextPlayer;
     for (let i = 0; i < playerList.length; i++) {
         if (name == playerList[i].Name) {
             return i;
@@ -166,11 +166,33 @@ function getIndexOfNextPlayer(resp) {
 };
 
 /********************************************************************
+// Ermittelt den index des nächsten Spielers
+/********************************************************************/
+function getIndexOfNextPlayer(resp) {
+    if (resp === result) { //wenn es sich um den allerersten Spieler handelt
+        let name = result.NextPlayer;
+        for (let i = 0; i < playerList.length; i++) {
+            if (name == playerList[i].Name) {
+                return i;
+            }
+        }
+    }
+    else {
+        let name = resp.Player;
+        for (let i = 0; i < playerList.length; i++) {
+            if (name == playerList[i].Name) {
+                return i;
+            }
+        }
+    }
+};
+
+/********************************************************************
 // Ermittelt den index der gesuchten Karte
 /********************************************************************/
-function getIndexOfCard(playerindex, card) {
+function getIndexOfCard(playerindex, Card) {
     for (let cardId = 0; cardId < playerList[playerindex].Cards.length; cardId++) {
-        if (playerList[playerindex].Cards[cardId].Color === card.Color && playerList[playerindex].Cards[cardId].Value === card.Value) {
+        if (playerList[playerindex].Cards[cardId].Color === Card.Color && playerList[playerindex].Cards[cardId].Value === Card.Value) {
             return cardId;
         }
     }
@@ -272,10 +294,10 @@ async function startNewGame() {
         // wir lesen den response body
 
         result = await response.json(); // alternativ response.text wenn nicht json gewünscht ist
-       /* currentPlayer = result.NextPlayer;
-        console.log("next player: " + currentPlayer);
+        currentPlayer = result.NextPlayer;
+        console.log("first player: " + currentPlayer);
         console.log(result);
-*/
+
     } else {
 
         alert("HTTP-Error: " + response.status);
@@ -311,28 +333,58 @@ async function tryToPlayCard(value, color) {
         console.log("got cardplayresult:");
         console.log(cardPlayresult);
         if (!cardPlayresult.error) {
-            console.log("Current Player: " + currentPlayer.Name);
-            await removeCardFromPlayersHand(currentPlayer, value, color);
-            currentPlayer = playerList[getIndexOfNextPlayer(cardPlayresult)]; // Update the current player
-            console.log("updated currentplayer: " + currentPlayer.Name)
+            if (firstPlayersTurn) {
+                currentPlayer = playerList[getIndexOfNextPlayer(result)];
+                console.log("Current Player: " + currentPlayer.Name);
+                await removeCardFromPlayersHand(currentPlayer, value, color);
+                currentPlayer = playerList[getIndexOfNextPlayer(cardPlayresult)]; // Update the current player
+                console.log("updated currentplayer: " + currentPlayer.Name);
+                firstPlayersTurn =false;
+            }
+            else {
+                console.log("Current Player: " + currentPlayer.Name);
+                await removeCardFromPlayersHand(currentPlayer, value, color);
+                currentPlayer = playerList[getIndexOfNextPlayer(cardPlayresult)]; // Update the current player
+                console.log("updated currentplayer: " + currentPlayer.Name);
+            }
+
         }
     } else {
         alert("HTTP-Error: " + response.status);
     }
 }
 
+async function removeCardFromPlayersHand(currentPlayer, value, color) {
 
-
-async function removeCardFromPlayersHand(value, color) {
-    console.log(currentPlayer);
     let cardsOfCurrentPlayer = currentPlayer.Cards;
     console.log("Karten von " + currentPlayer.Name + " vor entfernen: " + cardsOfCurrentPlayer);
+
     for (let i = 0; i < cardsOfCurrentPlayer.length; i++) {
-        if (value == cardsOfCurrentPlayer[i].CardValue && color == cardsOfCurrentPlayer[i].CardColor) {
-            cardsOfCurrentPlayer.splice(0, i);
+        if (value == cardsOfCurrentPlayer[i].Value && color == cardsOfCurrentPlayer[i].Color) {
+            const currentPlayerIndex = playerList.indexOf(currentPlayer);
+            cardsOfCurrentPlayer.splice(i, 1);
+            console.log("currentPlayerIndex: " + currentPlayerIndex); // Log to verify the index
+            removeCardUI(value, color, currentPlayerIndex);
         }
     }
+
     console.log("Karten von " + currentPlayer.Name + " nach entfernen: " + cardsOfCurrentPlayer);
+}
+
+
+async function removeCardUI(value, color, playerIndex) {
+    const ulId = `cards_player${playerIndex}`;
+    const ulElement = document.getElementById(ulId);
+    const cardElements = Array(ulElement.querySelectorAll("*"));
+    console.log(cardElements);
+    for (let i = 0; i < cardElements.length; i++) {
+        {
+            console.log(cardElements[i].img);
+            //ulId.removeChild(cardElements[i]);
+        }
+    }
+    //  (`[data-value="${value}"][data-color="${color}"]`);
+
 }
 
 function updateTopCard() {

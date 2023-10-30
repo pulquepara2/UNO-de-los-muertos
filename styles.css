@@ -48,3 +48,8 @@ button {
     transform: scale(1.2);
     cursor: grab;
 }
+
+.Drawpile:hover{
+    transform: scale(1.3);
+    cursor: grab;
+}
