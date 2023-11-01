@@ -4,7 +4,6 @@
 let gameId;
 let playerList = [];
 let playernames = [];
-let nextPlayer;
 let currentPlayer;
 let currentPlayerId;
 let direction = 1;
@@ -89,7 +88,7 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     gameId = result.Id;
 
     setUpPlayers(result.Players);
-    currentPlayer = playerList[getIndexOfPlayerByName(result.NextPlayer)]; 
+    setCurrentPlayer(result.NextPlayer);
     console.log("next player: " + currentPlayer.Name);
 
     displayplayernames("playerName1", "Player1_name_and_cards");
@@ -102,7 +101,7 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     distributeCards(2, "cards_player3");
     distributeCards(3, "cards_player4");
 
-    setTopCard(result.TopCard.Value, result.TopCard.Color,);
+    setTopCard(result.TopCard.Value, result.TopCard.Color);
 
     showdrawpile();
 
@@ -140,10 +139,10 @@ function buildSrcString(color, number) {
 
 function displayplayernames(htmlidname, htmlid_div) {
 
-    let h3 = document.createElement("h4");
+    let h4 = document.createElement("h4");
     let div = document.getElementById(htmlid_div)
-    h3.textContent = document.getElementById(htmlidname).value
-    div.insertBefore(h3, div.firstChild);
+    h4.textContent = document.getElementById(htmlidname).value
+    div.insertBefore(h4, div.firstChild);
 }
 
 /********************************************************************/
@@ -192,7 +191,6 @@ function getIndexOfCard(playerindex, card) {
             return cardId;
         }
     }
-
 }
 
 /**********************************************************************************************/
@@ -230,21 +228,27 @@ function distributeCards(playerid, htmlid) {
 
         img.CardValue = playerList[playerid].Cards[i].Value;
 
+        img.playerId = playerid;
+
         li.appendChild(img);
 
         i++;
     }
 
+
 }
 
 
-/***********************************************/
+/******************************************************************/
 // Setzt die TopCard 
-/***********************************************/
+// TopCardValue und TopCardColor für Überprüfung der Gültigkeit
+/******************************************************************/
 
 function setTopCard(value, color) {
     const TopCardImg = document.getElementById("TopCard");
     TopCardImg.src = buildSrcString(color, value);
+    topCardColor = color;
+    topCardValue = value;
 }
 
 
@@ -293,13 +297,24 @@ async function startNewGame() {
 
 
 /*****************************************************************************************************************/
-//hier wird die Funktion trytoplaycard aufgerufen und ihr werden Color und Value der angeklickten Karte übergeben
+// hier wird die Funktion trytoplaycard aufgerufen und ihr werden Color und Value der angeklickten Karte übergeben
+// wenn die karte nicht gültig ist, wird eine animation abgespielt
 /*****************************************************************************************************************/
-function image_clicked(ev) {
 
+function image_clicked(ev) {
+    if (!isValidCard(ev.target.playerId, ev.target.CardValue, ev.target.CardColor)) {
+        // if card is not valid, play shake animation and dont try to play card
+        playAnimation(ev.target, "shake", 1000);
+        return;
+    }
     tryToPlayCard(ev.target.CardValue, ev.target.CardColor);
 
 };
+
+
+/****************************************************/
+// Karte spielen
+/****************************************************/
 
 async function tryToPlayCard(value, color) {
     let wildColor = "not used right now";
@@ -318,38 +333,58 @@ async function tryToPlayCard(value, color) {
         console.log("got cardplayresult:");
         console.log(cardPlayresult);
         if (!cardPlayresult.error) {
-            console.log("Current Player: " + currentPlayer.Name);
             removeCardFromPlayersHand(value, color);
             setTopCard(value, color);
-            currentPlayer = playerList[getIndexOfPlayerByName(cardPlayresult.Player)];  // Update the current player
-            console.log("updated currentplayer: " + currentPlayer.Name)
-            //draw2 : 2x drawcard()
+            setCurrentPlayer(cardPlayresult.Player);   // Update the current player           
         }
     } else {
         alert("HTTP-Error: " + response.status);
     }
 }
 
+
+/*******************************************************************************************************************************/
+// Überprüft, ob die zu spielende Karte gültig ist.
+// Die Karte ist dann gültig, wenn sie dem current player gehört UND die richtige Farbe ODER Zahl ODER schwarze Actioncard ist 
+/*******************************************************************************************************************************/
+
+function isValidCard(playerId, value, color) {
+    if (currentPlayerId == playerId && (color == topCardColor || value == topCardValue || color == 'Black')) return true;
+    console.log("Invalid Card or Player!")
+    return false;
+}
+
+/***************************************************/
+// Enfternt Karte aud dem Kartenarray des Spielers 
+/***************************************************/
+
 function removeCardFromPlayersHand(value, color) {
-    console.log(currentPlayer);
     let cardsOfCurrentPlayer = currentPlayer.Cards;
-    console.log("Karten von " + currentPlayer.Name + " vor entfernen: " + cardsOfCurrentPlayer);
     for (let i = 0; i < cardsOfCurrentPlayer.length; i++) {
         if (value == cardsOfCurrentPlayer[i].Value && color == cardsOfCurrentPlayer[i].Color) {
             cardsOfCurrentPlayer.splice(i, 1); // remove 1 item starting at index i
         }
     }
-    console.log("Karten von " + currentPlayer.Name + " nach entfernen: " + cardsOfCurrentPlayer);
-    let playerIndex = getIndexOfPlayerByName(currentPlayer.Name);
-    updateHtml(playerIndex);
+
+    updateHtml();
 }
 
-function updateHtml(playerIndex) {
+/**************************************************************************************************/
+// Karte wird im UI entfernt 
+// Alle KArten des Spielers werden kurz entfernt und die aktualisierten Karten wieder ausgeteilt
+/**************************************************************************************************/
+
+function updateHtml() {
     // remove old cards
-    removeCards("cards_player" + (playerIndex + 1));
+    removeCards("cards_player" + (currentPlayerId + 1));
     //draw new cards
-    distributeCards(playerIndex, "cards_player" + (playerIndex + 1));
+    distributeCards(currentPlayerId, "cards_player" + (currentPlayerId + 1));
 }
+
+
+/***************************************************/
+// Enfternt alle Karten aus der ul des Spielers 
+/***************************************************/
 
 function removeCards(htmlId) {
     const playerCardsElement = document.getElementById(htmlId);
@@ -357,6 +392,12 @@ function removeCards(htmlId) {
         playerCardsElement.removeChild(playerCardsElement.firstChild);
     }
 }
+
+
+
+/***************************************************/
+// Funktion um Karte zu ziehen
+/***************************************************/
 
 async function drawCard() {
     let url = `https://nowaunoweb.azurewebsites.net/api/Game/drawCard/${gameId}`;
@@ -374,16 +415,32 @@ async function drawCard() {
         console.log(drawCardResult);
         if (!drawCardResult.error) {
             addCardToPlayersHand(drawCardResult.Card);
-            currentPlayer = playerList[getIndexOfPlayerByName(drawCardResult.NextPlayer)];  // Update the current player
-            console.log("updated currentplayer: " + currentPlayer.Name)
+            setCurrentPlayer(drawCardResult.NextPlayer);  // Update the current player
         }
     } else {
         alert("HTTP-Error: " + response.status);
     }
 }
 
+
+/*********************************************************/
+// Fügt gezogene Karte dem Kartenarray des Spielers hinzu
+// aktualisiert Karten des Spielers im HTML
+/*********************************************************/
+
 function addCardToPlayersHand(Card) {
     currentPlayer.Cards.push(Card);
-    const playerIndex = getIndexOfPlayerByName(currentPlayer.Name);
-    updateHtml(playerIndex);
+    updateHtml();
+}
+
+
+/*************************************************************************************/
+// Fügt CSS Klasse für Animation hinzu und entfernt diese nach der angegebenen Dauer
+/*************************************************************************************/
+
+function playAnimation(target, animation, duration) {
+    // add css class for animation
+    target.classList.add(animation);
+    // remove css class after duration
+    setTimeout(function () { target.classList.remove(animation); }, duration);
 }
