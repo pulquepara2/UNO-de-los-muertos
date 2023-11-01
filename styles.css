@@ -4,7 +4,7 @@
     color: #ebe6f7;
     background-color: #071540;
     border-radius: 25px;
-    height: 800px;
+    height: 850px;
     padding-left: 50px;
 }
 
@@ -49,6 +49,9 @@ button {
     margin-top: 50px;
 }
 
+#Player4_name_and_cards {
+    margin-top: 45px;
+}
 .card:hover {
     transform: scale(1.2);
     cursor: grab;
@@ -73,4 +76,8 @@ button {
   40%, 60% {
     transform: translate3d(4px, 0, 0);
   }
+}
+
+.name_score{
+    width: 375px;
 }

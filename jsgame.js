@@ -93,14 +93,14 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     console.log("next player: " + currentPlayer.Name);
 
     displayplayernames("playerName1", "name_score_1");
-    displayplayernames("playerName2", "Player2_name_and_cards");
-    displayplayernames("playerName3", "Player3_name_and_cards");
-    displayplayernames("playerName4", "Player4_name_and_cards");
+    displayplayernames("playerName2", "name_score_2");
+    displayplayernames("playerName3", "name_score_3");
+    displayplayernames("playerName4", "name_score_4");
 
     displayPlayersScore("name_score_1",0);
-    displayPlayersScore("Player2_name_and_cards",1);
-    displayPlayersScore("Player3_name_and_cards",2);
-    displayPlayersScore("Player4_name_and_cards",3);
+    displayPlayersScore("name_score_2",1);
+    displayPlayersScore("name_score_3",2);
+    displayPlayersScore("name_score_4",3);
 
     distributeCards(0, "cards_player1");
     distributeCards(1, "cards_player2");
