@@ -9,6 +9,7 @@ let currentPlayerId;
 let direction = 1;
 let topCardValue;
 let topCardColor;
+let result= Object;
 
 /***********************************************/
 // Konstruktor-Funktion für die Spieler 
@@ -84,17 +85,22 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     myModal.hide();
 
-    let result = await startNewGame();
+    result = await startNewGame();
     gameId = result.Id;
 
     setUpPlayers(result.Players);
     setCurrentPlayer(result.NextPlayer);
     console.log("next player: " + currentPlayer.Name);
 
-    displayplayernames("playerName1", "Player1_name_and_cards");
+    displayplayernames("playerName1", "name_score_1");
     displayplayernames("playerName2", "Player2_name_and_cards");
     displayplayernames("playerName3", "Player3_name_and_cards");
     displayplayernames("playerName4", "Player4_name_and_cards");
+
+    displayPlayersScore("name_score_1",0);
+    displayPlayersScore("Player2_name_and_cards",1);
+    displayPlayersScore("Player3_name_and_cards",2);
+    displayPlayersScore("Player4_name_and_cards",3);
 
     distributeCards(0, "cards_player1");
     distributeCards(1, "cards_player2");
@@ -143,6 +149,14 @@ function displayplayernames(htmlidname, htmlid_div) {
     let div = document.getElementById(htmlid_div)
     h4.textContent = document.getElementById(htmlidname).value
     div.insertBefore(h4, div.firstChild);
+}
+
+function displayPlayersScore(htmlid, playerId){
+    let score = result.Players[playerId].Score;
+    let h6 = document.createElement("h6");
+    h6.textContent="Score: "+ score;
+    let div = document.getElementById(htmlid);
+    div.appendChild(h6);
 }
 
 /********************************************************************/
