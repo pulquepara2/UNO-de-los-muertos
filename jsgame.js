@@ -1,10 +1,15 @@
+/***********************************************/
+// Globale Variablen
+/***********************************************/
 let gameId;
 let playerList = [];
 let playernames = [];
 let nextPlayer;
 let currentPlayer;
+let currentPlayerId;
 let direction = 1;
-
+let topCardValue;
+let topCardColor;
 
 /***********************************************/
 // Konstruktor-Funktion für die Spieler 
@@ -167,6 +172,18 @@ function getIndexOfPlayerByName(name) {
 };
 
 /********************************************************************
+// Erstellt globale Variablen für den currentPlayer und seine Id
+// Id= Index in der playerList
+/********************************************************************/
+
+function setCurrentPlayer(nextPlayer) {
+    currentPlayerId = getIndexOfPlayerByName(nextPlayer);
+    currentPlayer = playerList[currentPlayerId];
+    console.log("updated currentplayer: " + currentPlayer.Name)
+}
+
+
+/********************************************************************
 // Ermittelt den index der gesuchten Karte
 /********************************************************************/
 function getIndexOfCard(playerindex, card) {
@@ -180,7 +197,7 @@ function getIndexOfCard(playerindex, card) {
 
 /**********************************************************************************************/
 //Zeigt die Karten der Spieler an, hier wird auch der Eventlistener für die Karten hinzugefügt
-/*********************************************************************************************/
+/**********************************************************************************************/
 
 function distributeCards(playerid, htmlid) {
     let playerlistHtml = document.getElementById(htmlid);
@@ -240,6 +257,9 @@ function showdrawpile() {
     drawpileimg.src = "./cardsimg/back0.png";
 };
 
+/*****************************************************/
+//Übergibt die 4 Spielernamen, Spiel wird gestartet
+/*****************************************************/
 
 async function startNewGame() {
 
