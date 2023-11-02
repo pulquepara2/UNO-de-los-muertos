@@ -49,6 +49,7 @@ button {
     margin-top: 50px;
 }
 
+
 #Player4_name_and_cards {
     margin-top: 45px;
 }
@@ -80,4 +81,8 @@ button {
 
 .name_score{
     width: 375px;
+}
+
+#row2{
+margin-top: 70px;
 }
