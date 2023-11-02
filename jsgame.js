@@ -9,7 +9,7 @@ let currentPlayerId;
 let direction = 1;
 let topCardValue;
 let topCardColor;
-let result= Object;
+let result = Object;
 
 /***********************************************/
 // Konstruktor-Funktion für die Spieler 
@@ -92,15 +92,15 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     setCurrentPlayer(result.NextPlayer);
     console.log("next player: " + currentPlayer.Name);
 
-    displayplayernames("playerName1", "name_score_1");
-    displayplayernames("playerName2", "name_score_2");
-    displayplayernames("playerName3", "name_score_3");
-    displayplayernames("playerName4", "name_score_4");
+    displayplayernames("playerName1", "name_score_0");
+    displayplayernames("playerName2", "name_score_1");
+    displayplayernames("playerName3", "name_score_2");
+    displayplayernames("playerName4", "name_score_3");
 
-    displayPlayersScore("name_score_1",0);
-    displayPlayersScore("name_score_2",1);
-    displayPlayersScore("name_score_3",2);
-    displayPlayersScore("name_score_4",3);
+    displayPlayersScore("name_score_0", 0);
+    displayPlayersScore("name_score_1", 1);
+    displayPlayersScore("name_score_2", 2);
+    displayPlayersScore("name_score_3", 3);
 
     distributeCards(0, "cards_player1");
     distributeCards(1, "cards_player2");
@@ -151,10 +151,11 @@ function displayplayernames(htmlidname, htmlid_div) {
     div.insertBefore(h4, div.firstChild);
 }
 
-function displayPlayersScore(htmlid, playerId){
+function displayPlayersScore(htmlid, playerId) {
     let score = result.Players[playerId].Score;
     let h6 = document.createElement("h6");
-    h6.textContent="Score: "+ score;
+    h6.id="score"+playerId;
+    h6.textContent = "Score: " + score;
     let div = document.getElementById(htmlid);
     div.appendChild(h6);
 }
@@ -248,8 +249,6 @@ function distributeCards(playerid, htmlid) {
 
         i++;
     }
-
-
 }
 
 
@@ -348,6 +347,7 @@ async function tryToPlayCard(value, color) {
         console.log(cardPlayresult);
         if (!cardPlayresult.error) {
             removeCardFromPlayersHand(value, color);
+            updatePlayersScoreAndDisplayIt(cardPlayresult);
             setTopCard(value, color);
             setCurrentPlayer(cardPlayresult.Player);   // Update the current player           
         }
@@ -385,7 +385,7 @@ function removeCardFromPlayersHand(value, color) {
 
 /**************************************************************************************************/
 // Karte wird im UI entfernt 
-// Alle KArten des Spielers werden kurz entfernt und die aktualisierten Karten wieder ausgeteilt
+// Alle Karten des Spielers werden kurz entfernt und die aktualisierten Karten wieder ausgeteilt
 /**************************************************************************************************/
 
 function updateHtml() {
@@ -406,7 +406,6 @@ function removeCards(htmlId) {
         playerCardsElement.removeChild(playerCardsElement.firstChild);
     }
 }
-
 
 
 /***************************************************/
@@ -457,4 +456,12 @@ function playAnimation(target, animation, duration) {
     target.classList.add(animation);
     // remove css class after duration
     setTimeout(function () { target.classList.remove(animation); }, duration);
+}
+
+function updatePlayersScoreAndDisplayIt(resp) {
+    let score = currentPlayer.Score;
+    score = resp.Score;
+    let h6 = document.getElementById("score"+ currentPlayerId);
+    h6.textContent="Score: " +score;
+    return score;
 }
