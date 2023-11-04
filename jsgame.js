@@ -9,7 +9,8 @@ let topCardColor;
 
 
 let myModal = new bootstrap.Modal(document.getElementById('playerNames'));
-let ColorchangeModal = new bootstrap.Modal(document.getElementById('Colorchange'));
+let ColorchangeModal = new bootstrap.Modal(document.getElementById('ColorchangeModal'));
+
 document.getElementById("startbutton").addEventListener("click", function () {        
     myModal.show();
 })
@@ -259,7 +260,7 @@ function image_clicked(ev) {
     let color = ev.target.CardColor;
     let isDrawCard = false;
     // handle color change
-    //TODO: nicht Strings, sondern 
+    //TODO: nicht Strings, sondern value vergleichen
     if (ev.target.Text == 'ChangeColor' || ev.target.Text == 'Draw4') {
         wildColor = handleColorChange();
     }
