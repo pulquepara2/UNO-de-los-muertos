@@ -14,7 +14,8 @@ h1 {
     color: #F28705;
 }
 
-h4,h6 {
+h4,
+h6 {
     color: #F28705;
 }
 
@@ -53,36 +54,53 @@ button {
 #Player4_name_and_cards {
     margin-top: 45px;
 }
+
 .card:hover {
     transform: scale(1.2);
     cursor: grab;
 }
-.shake{
+
+.shake {
     animation: move 1s ease-in;
 }
 
 @keyframes move {
-  10%, 90% {
-    transform: translate3d(-1px, 0, 0);
-  }
-  
-  20%, 80% {
-    transform: translate3d(2px, 0, 0);
-  }
 
-  30%, 50%, 70% {
-    transform: translate3d(-4px, 0, 0);
-  }
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
 
-  40%, 60% {
-    transform: translate3d(4px, 0, 0);
-  }
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
 }
 
-.name_score{
+.name_score {
     width: 375px;
 }
 
-#row2{
-margin-top: 60px;
+#row2 {
+    margin-top: 60px;
+}
+
+.pointer {
+    transform: rotateX(180deg);
+    transform: rotateY(180deg);
+    scale: 0.2;
+}
+.hidden{
+    visibility: hidden;
 }
