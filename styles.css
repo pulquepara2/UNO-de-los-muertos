@@ -6,101 +6,160 @@
     border-radius: 25px;
     height: 850px;
     padding-left: 50px;
-}
-
-h1 {
+  }
+  
+  h1 {
     margin-bottom: 50px;
     margin-top: 50px;
-    color: #F28705;
-}
-
-h4,
-h6 {
-    color: #F28705;
-}
-
-button {
+    color: #f28705;
+  }
+  
+  h4,
+  h6 {
+    color: #f28705;
+  }
+  
+  button {
     margin-top: 20px;
     margin-bottom: 20px;
-}
-
-#playernamesform {
+  }
+  
+  #playernamesform {
     font-family: Alike Angular;
-}
-
-.card {
+  }
+  
+  .card {
     height: 80px;
-}
-
-#TopCard {
+  }
+  
+  #TopCard {
     height: 110px;
-}
-
-#Drawpile {
+  }
+  
+  #Drawpile {
     height: 110px;
     align-self: flex-end;
-}
-
-#Drawpile:hover {
+  }
+  
+  #Drawpile:hover {
     transform: scale(1.2);
     cursor: grab;
-}
-
-#Player2_name_and_cards {
+  }
+  
+  #Player2_name_and_cards {
     margin-top: 50px;
-}
-
-
-#Player4_name_and_cards {
+  }
+  
+  #Player4_name_and_cards {
     margin-top: 45px;
-}
-
-.card:hover {
+  }
+  
+  .card:hover {
     transform: scale(1.2);
     cursor: grab;
-}
-
-.shake {
+  }
+  
+  .shake {
     animation: move 1s ease-in;
-}
-
-@keyframes move {
-
+  }
+  
+  .pointer {
+    margin-left: 10px;
+    height: 35px;
+    animation: bounce 2s infinite;
+  }
+  .hidden {
+    visibility: hidden;
+  }
+  
+  .cardContainer {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .GameTitle {
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 25px;
+  }
+  
+  #name_score_3 {
+    margin-top: 127px;
+  }
+  
+  .thirdCol {
+    padding-top: 275px;
+  }
+  
+  #directionImg {
+    height: 150px;
+  }
+  
+  .spinLeft {
+    animation: spin-left 3s linear infinite;
+  }
+  
+  .spinRight {
+    animation: spin-right 3s linear infinite;
+  }
+  
+  .middlePlayerRow {
+    min-height: 277px;
+    max-height: 277px;
+  }
+  
+  .gap-15 {
+    gap: 15px;
+  }
+  
+  @keyframes move {
     10%,
     90% {
-        transform: translate3d(-1px, 0, 0);
+      transform: translate3d(-1px, 0, 0);
     }
-
+  
     20%,
     80% {
-        transform: translate3d(2px, 0, 0);
+      transform: translate3d(2px, 0, 0);
     }
-
+  
     30%,
     50%,
     70% {
-        transform: translate3d(-4px, 0, 0);
+      transform: translate3d(-4px, 0, 0);
     }
-
+  
     40%,
     60% {
-        transform: translate3d(4px, 0, 0);
+      transform: translate3d(4px, 0, 0);
     }
-}
-
-.name_score {
-    width: 375px;
-}
-
-#row2 {
-    margin-top: 60px;
-}
-
-.pointer {
-    transform: rotateX(180deg);
-    transform: rotateY(180deg);
-    scale: 0.2;
-}
-.hidden{
-    visibility: hidden;
-}
+  }
+  
+  @keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateX(0);
+    }
+    40% {
+      transform: translateX(30px);
+    }
+    60% {
+      transform: translateX(15px);
+    }
+  }
+  
+  @keyframes spin-right {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes spin-left {
+    100% {
+      transform: rotate(-360deg);
+    }
+  }
+  

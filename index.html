@@ -12,81 +12,95 @@
 </head>
 
 <body>
-    
-    <div class="container" id="maincontent">
+
+    <div class="container-fluid" id="maincontent">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-5 text-align-center GameTitle">
 
-                    <h1 class="text">UNO DE LOS MUERTOS</h1>
+            <!-- Header Row -->
+            <div class="row d-flex justify-content-center">
+                <div class="col-5 ">
+                    <h1 class="GameTitle">UNO DE LOS MUERTOS</h1>
                 </div>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-4 Player1" id="Player1_name_and_cards">
-                    <div class="justify-content-start name_score" id="name_score_0">
-                        <h4 id="namePlayer1"></h4>
-                        <img id="pointer_0" src="others/Skeleton_hand_pointing.svg" class="hidden pointer">
-                    </div>
-                    <div class="cards1">
-                        <ul class="list-unstyled d-flex flex-row" id="cards_player1"></ul>
-                    </div>
-                </div>
-            </div>
-            <div class="row justify-content-center" id="row2">
-                <div class="col-3 Platzhalter">
 
-                </div>
+            <!-- Content Row -->
+            <div class="row">
+                <!-- First Column -->
+                <div class="col-4 firstCol">
 
-                <div class="col-2 align-self-end d-flex justify-content-end Drawpile">
-                    <img src="" id="Drawpile" onclick="drawCard()" />
-                </div>
-                <div class="col-2 align-self-end TopCard">
-                    <div class="TopCardImg" id="TopCardImg">
-                        <img src="" id="TopCard" />
-                    </div>
-                </div>
-                <div class="col align-self-end" id="Player2_name_and_cards">
-                    <div class="d-flex flex-row justify-content-between align-self-center align-items-end name_score"
-                        id="name_score_1">
-                        <h4 id="namePlayer2"></h4>
-                        <img id="pointer_1" src="others/Skeleton_hand_pointing.svg" class="hidden pointer">
-                    </div>
-                    <div class="cards2">
-                        <ul class="list-unstyled d-flex flex-row " id="cards_player2"></ul>
-                    </div>
-                </div>
+                    <!-- Direction Img -->
+                    <img id="directionImg" class="spinRight" src="others\direction.png">
 
-            </div>
-            <div class="row justify-content-center">
-                <div class="col align-self-start Player4" id="Player4_name_and_cards">
-                    <div class="d-flex flex-row justify-content-between align-items-end name_score" id="name_score_3">
+                    <!-- Player 4 -->
+                    <div class="d-flex flex-row justify-content-center name_score" id="name_score_3">
                         <h4 id="namePlayer4"></h4>
-                        <img id="pointer_3" src="others/Skeleton_hand_pointing.svg" class="hidden pointer">
+                        <img id="pointer_3" src="others/Skeleton_hand_pointing.png" class="hidden pointer">
                     </div>
-                    <div class="cards4">
-                        <ul class="list-unstyled d-flex flex-row" id="cards_player4"></ul>
-                    </div>
+                    <div class="cardContainer d-flex flex-row justify-content-center" id="cards_player4"></div>
+
                 </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-4 align-self-center Player3" id="Player3_name_and_cards">
-                    <div class="d-flex flex-row justify-content-between align-items-end name_score" id="name_score_2">
-                        <h4 id="namePlayer3"></h4>
-                        <img id="pointer_2" src="others/Skeleton_hand_pointing.svg" class="hidden pointer">
+                <!-- Second Column -->
+                <div class="col-4 secondCol">
+
+                    <!-- Player 1 -->
+                    <div class="row middlePlayerRow">
+                        <div class="col-12 d-flex align-items-end justify-content-center">
+                            <div>
+                                <div class="d-flex flex-row justify-content-center name_score" id="name_score_0">
+                                    <h4 id="namePlayer1"></h4>
+                                    <img id="pointer_0" src="others/Skeleton_hand_pointing.png" class="hidden pointer">
+                                </div>
+                                <div class="cardContainer d-flex flex-row justify-content-center" id="cards_player1">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="cards3">
-                        <ul class="list-unstyled d-flex flex-row" id="cards_player3"></ul>
+
+                    <!-- DrawPile & TopCard -->
+                    <div class="row mt-4">
+                        <!-- Drawpile -->
+                        <div class="col-12 d-flex flex-row justify-content-center gap-15">
+                            <img src="" id="Drawpile" onclick="drawCard()" />
+                            <img src="" id="TopCard" />
+                        </div>
                     </div>
+
+                    <!-- Player 3 -->
+                    <div class="row mt-4 middlePlayerRow">
+                        <div class="col-12">
+                            <div class="d-flex flex-row justify-content-center name_score" id="name_score_2">
+                                <h4 id="namePlayer3"></h4>
+                                <img id="pointer_2" src="others/Skeleton_hand_pointing.png" class="hidden pointer">
+                            </div>
+                            <div class="cardContainer d-flex flex-row justify-content-center" id="cards_player3"></div>
+                        </div>
+                    </div>
+
                 </div>
+
+                <!-- Third Column -->
+                <div class="col-4 thirdCol">
+                    <!-- Player 2 -->
+                    <div class="d-flex flex-row justify-content-center name_score" id="name_score_1">
+                        <h4 id="namePlayer2"></h4>
+                        <img id="pointer_1" src="others/Skeleton_hand_pointing.png" class="hidden pointer">
+                    </div>
+                    <div class="cardContainer d-flex flex-row justify-content-center" id="cards_player2"></div>
+                </div>
+
             </div>
+
+            <!-- Button Row -->
             <div class="row">
                 <div class="col-2 button">
                     <button type="button" id="startbutton">New game</button>
                 </div>
             </div>
+
         </div>
     </div>
 
+    <!-- PlayerName Modal-->
     <div class="modal fade" id="playerNames" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static">
         <form id="playerNamesForm">
             <div class="modal-dialog">
@@ -115,52 +129,52 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="playerNamesSubmit">Spiel
-                            starten</button>
+                        <button type="submit" class="btn btn-primary" id="playerNamesSubmit">Spiel starten</button>
                     </div>
 
                 </div>
             </div>
         </form>
     </div>
+
+    <!-- ColorChange Modal-->
     <div class="modal fade" id="ColorchangeModal" tabindex="-1" role="dialog" data-bs-backdrop="static"
-    aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Choose a Color</h5>
-            </div>
-            <div class="modal-body" id="ColorButtons">
-                <div id="row-1" class="row ">
-                    <div class="col-6">
-                        <button type="submit" id="Red" class="color-buttons">
-                            <img src="colorskulls\red_skull.jpg">
-                        </button>
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Choose a Color</h5>
+                </div>
+                <div class="modal-body" id="ColorButtons">
+                    <div id="row-1" class="row ">
+                        <div class="col-6">
+                            <button type="submit" id="Red" class="color-buttons">
+                                <img src="colorskulls\red_skull.jpg">
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button type="submit" id="Blue" class="color-buttons">
+                                <img src="colorskulls\blue_skull.jpg">
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <button type="submit" id="Blue" class="color-buttons">
-                            <img src="colorskulls\blue_skull.jpg">
-                        </button>
+                    <div id="row-2" class="row align-self-center ">
+                        <div class="col-6">
+                            <button type="submit" id="Green" class="color-buttons">
+                                <img src="colorskulls\green_skull.jpg">
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button type="submit" id="Yellow" class="color-buttons">
+                                <img src="colorskulls\yellow_skull.jpg">
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div id="row-2" class="row align-self-center justify-content-center">
-                    <div class="col-6">
-                        <button type="submit" id="Green" class="color-buttons">
-                            <img src="colorskulls\green_skull.jpg">
-                        </button>
-                    </div>
-                    <div class="col-6">
-                        <button type="submit" id="Yellow" class="color-buttons">
-                            <img src="colorskulls\yellow_skull.jpg">
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
             </div>
         </div>
     </div>
-</div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>

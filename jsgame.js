@@ -161,13 +161,6 @@ function distributeCards(playerid, htmlid) {
     let i = 0;
     while (i < playerList[playerid].Cards.length) {
 
-        const li = document.createElement("li");
-
-        const span = document.createElement("span");
-
-        li.appendChild(span);
-
-        playerlistHtml.appendChild(li);
 
         const img = document.createElement("img");
 
@@ -189,7 +182,7 @@ function distributeCards(playerid, htmlid) {
 
         img.playerId = playerid;
 
-        li.appendChild(img);
+        playerlistHtml.appendChild(img);
 
         i++;
     }
@@ -273,11 +266,22 @@ async function image_clicked(ev) {
     }
     if (ev.target.Text == 'Reverse') {
         direction *= -1;
+        toggleSpinAnimationDirection();
     }
 
 
     tryToPlayCard(ev.target.CardValue, color, wildColor, isDrawCard);
 };
+
+function toggleSpinAnimationDirection() {
+    if (document.getElementById("directionImg").classList.contains('spinRight')) {
+        document.getElementById("directionImg").classList.remove('spinRight');
+        document.getElementById("directionImg").classList.add('spinLeft');
+    } else {
+        document.getElementById("directionImg").classList.remove('spinLeft');
+        document.getElementById("directionImg").classList.add('spinRight');
+    }
+}
 
 
 async function tryToPlayCard(value, color, wildColor, isDrawCard) {
