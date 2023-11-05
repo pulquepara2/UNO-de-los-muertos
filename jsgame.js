@@ -282,7 +282,7 @@ async function image_clicked(ev) {
     }
 
 
-    tryToPlayCard(ev.target.CardValue, color, wildColor, isDrawCard,score);
+    tryToPlayCard(ev.target.CardValue, color, wildColor, isDrawCard, score);
 };
 
 function displayDirection() {
@@ -303,18 +303,32 @@ function displayDirection() {
     }
 }
 */
-function updateScore(playerid, scoreofplayedcard){
-    let score= 0;
-    let cards= playerList[playerid].Cards;
-    for(let i = 0; i< cards.length; i++){
+
+/************************************************************************************/
+// Aktualisiert den Score des Spielers, nachdem er eine normale Karte gespielt hat
+/************************************************************************************/
+function updateScore(playerid, scoreofplayedcard) {
+    let score = 0;
+    let cards = playerList[playerid].Cards;
+    for (let i = 0; i < cards.length; i++) {
         score = score + cards[i].Score;
-    
+
     }
     score = score - scoreofplayedcard;
-    document.getElementById("Score_"+playerid).textContent="Score: "+ score;
+    document.getElementById("Score_" + playerid).textContent = "Score: " + score;
 }
 
-async function tryToPlayCard(value, color, wildColor, isDrawCard,score) {
+function updateScoreAfterDrawCard(player,playerid) {
+    let cards= player.Cards;
+    let score = 0;
+    for(let i = 0; i < cards.length; i++){
+        score= score + cards[i].Score;
+    }
+    document.getElementById("Score_" + playerid).textContent = "Score: " + score;
+}
+
+
+async function tryToPlayCard(value, color, wildColor, isDrawCard, score) {
     let url = `https://nowaunoweb.azurewebsites.net/api/Game/PlayCard/${gameId}?value=${value}&color=${color}&wildColor=${wildColor}`;
     let response = await fetch(url, {
         method: "PUT",
@@ -335,10 +349,11 @@ async function tryToPlayCard(value, color, wildColor, isDrawCard,score) {
                 // in this case this is the blocked player
                 let blockedPlayer = getNextPlayer();
                 updatePlayerCards(blockedPlayer.Player);
+                updateScoreAfterDrawCard(blockedPlayer, getIndexOfPlayerByName(blockedPlayer.Player));
             }
-            
+
             setCurrentPlayer(cardPlayresult);
-            
+
 
         }
         else {
@@ -405,6 +420,7 @@ async function drawCard() {
         //console.log(drawCardResult);
         if (!drawCardResult.error) {
             addCardToPlayersHand(drawCardResult.Card);
+            updateScoreAfterDrawCard(currentPlayer,currentPlayerId);
             setCurrentPlayerByName(drawCardResult.NextPlayer);  // Update the current player
         } else {
             alert("Error: " + drawCardResult.error);
@@ -463,6 +479,10 @@ function setCurrentPlayer(cardPlayresult) {
     displayCurrentPlayer();
 }
 
+/******************************************************************/
+// pointer, der in UI auf currentplayer zeigt (hier: skeletthand)
+/******************************************************************/
+
 function displayCurrentPlayer() {
     for (let i = 0; i < playerList.length; i++) {
         if (i == currentPlayerId) {
@@ -512,9 +532,6 @@ function handleColorChange() {
         })
     });
 
-    // call trytoplaycard method with corresponding wildcard
-    //set wildcard as Topcard
-
 }
 
 /**********************************************************/
@@ -532,9 +549,9 @@ function checkDraw4() {
     return true;
 }
 
-/*******************************************************/
-//Fügt die Karte dem Kartenarray des Spielers hinzu
-/*******************************************************/
+/**************************************************************/
+// ermittelt den Spieler, der als nächstes an der Reihe ist
+/**************************************************************/
 function getNextPlayer() {
     // use the modulo operator to stay withing the bounds of the array
     if (direction === 1) {
