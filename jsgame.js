@@ -88,7 +88,7 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     distributeCards(3, "cards_player4");
 
     setTopCard(result.TopCard.Value, result.TopCard.Color);
-
+    displayDirection();
     showdrawpile();
 
     //Startbutton nach dem Spielstart entfernen
@@ -266,14 +266,23 @@ async function image_clicked(ev) {
     }
     if (ev.target.Text == 'Reverse') {
         direction *= -1;
-        toggleSpinAnimationDirection();
+        displayDirection();
+      //  toggleSpinAnimationDirection();
     }
 
 
     tryToPlayCard(ev.target.CardValue, color, wildColor, isDrawCard);
 };
 
-function toggleSpinAnimationDirection() {
+function displayDirection(){
+    if (direction == 1){
+document.getElementById("directionImg").src="others/direction_cw.png";
+    }
+    if(direction == -1){
+        document.getElementById("directionImg").src="others/direction_ccw.png";
+    }
+}
+/*function toggleSpinAnimationDirection() {
     if (document.getElementById("directionImg").classList.contains('spinRight')) {
         document.getElementById("directionImg").classList.remove('spinRight');
         document.getElementById("directionImg").classList.add('spinLeft');
@@ -282,6 +291,7 @@ function toggleSpinAnimationDirection() {
         document.getElementById("directionImg").classList.add('spinRight');
     }
 }
+*/
 
 
 async function tryToPlayCard(value, color, wildColor, isDrawCard) {

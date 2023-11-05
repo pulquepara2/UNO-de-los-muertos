@@ -96,11 +96,12 @@
   }
   
   .spinLeft {
-    animation: spin-left 3s linear infinite;
+    
+   /* animation: spin-left 3s linear infinite;*/
   }
   
   .spinRight {
-    animation: spin-right 3s linear infinite;
+   /* animation: spin-right 3s linear infinite;*/
   }
   
   .middlePlayerRow {
