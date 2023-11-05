@@ -327,6 +327,9 @@ function updateScoreAfterDrawCard(player,playerid) {
     document.getElementById("Score_" + playerid).textContent = "Score: " + score;
 }
 
+function updateScoreAfterActionCard(playerid, score){  
+    document.getElementById("Score_" + playerid).textContent = "Score: " + score;
+}
 
 async function tryToPlayCard(value, color, wildColor, isDrawCard, score) {
     let url = `https://nowaunoweb.azurewebsites.net/api/Game/PlayCard/${gameId}?value=${value}&color=${color}&wildColor=${wildColor}`;
@@ -349,7 +352,6 @@ async function tryToPlayCard(value, color, wildColor, isDrawCard, score) {
                 // in this case this is the blocked player
                 let blockedPlayer = getNextPlayer();
                 updatePlayerCards(blockedPlayer.Player);
-                updateScoreAfterDrawCard(blockedPlayer, getIndexOfPlayerByName(blockedPlayer.Player));
             }
 
             setCurrentPlayer(cardPlayresult);
@@ -583,6 +585,8 @@ async function updatePlayerCards(playerName) {
             let playerId = getIndexOfPlayerByName(playerName);
             playerList[playerId] = getCardsResult;
             updateHtml(playerId);
+            let score = getCardsResult.Score;
+            updateScoreAfterActionCard(playerId, score);
         } else {
             alert("Error: " + getCardsResult.error);
         }
