@@ -74,9 +74,11 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
 
     let result = await startNewGame();
     gameId = result.Id;
+    console.log(result);
 
     //setUpPlayers(result.Players);
     playerList = result.Players;
+    console.log(playerList);
     setCurrentPlayerByName(result.NextPlayer);
     console.log("next player: " + currentPlayer.Player);
 
@@ -88,6 +90,13 @@ document.getElementById('playerNamesForm').addEventListener('submit', async func
     distributeCards(3, "cards_player4");
 
     setTopCard(result.TopCard.Value, result.TopCard.Color);
+
+    for (let i = 0; i < playerList.length; i++) {
+        let score = playerList[i].Score;
+        let h6 = document.getElementById("Score_" + i);
+        h6.textContent = "Score: " + score;
+    }
+
     displayDirection();
     showdrawpile();
 
@@ -127,7 +136,6 @@ function displayPlayerNames() {
         document.getElementById('namePlayer' + (i + 1)).textContent = playernames[i];
     }
 }
-
 
 /********************************************************************
 // Ermittelt den index des nächsten Spielers
@@ -180,7 +188,9 @@ function distributeCards(playerid, htmlid) {
 
         img.CardValue = playerList[playerid].Cards[i].Value;
 
-        img.playerId = playerid;
+        img.CardScore = playerList[playerid].Cards[i].Score;
+
+        img.playerId = playerid; //wird benötigt, um zu überprüfen, ob Karte vom currentplayer ist
 
         playerlistHtml.appendChild(img);
 
@@ -255,6 +265,7 @@ async function image_clicked(ev) {
     }
     let wildColor = undefined;
     let color = ev.target.CardColor;
+    let score = ev.target.CardScore;
     let isDrawCard = false;
     // handle color change
     //TODO: nicht Strings, sondern value vergleichen (Colorchange: Value= 14, Draw4: Value=13, beide haben Score von 50)
@@ -267,19 +278,19 @@ async function image_clicked(ev) {
     if (ev.target.Text == 'Reverse') {
         direction *= -1;
         displayDirection();
-      //  toggleSpinAnimationDirection();
+        //  toggleSpinAnimationDirection();
     }
 
 
-    tryToPlayCard(ev.target.CardValue, color, wildColor, isDrawCard);
+    tryToPlayCard(ev.target.CardValue, color, wildColor, isDrawCard,score);
 };
 
-function displayDirection(){
-    if (direction == 1){
-document.getElementById("directionImg").src="others/direction_cw.png";
+function displayDirection() {
+    if (direction == 1) {
+        document.getElementById("directionImg").src = "others/direction_cw.png";
     }
-    if(direction == -1){
-        document.getElementById("directionImg").src="others/direction_ccw.png";
+    if (direction == -1) {
+        document.getElementById("directionImg").src = "others/direction_ccw.png";
     }
 }
 /*function toggleSpinAnimationDirection() {
@@ -292,9 +303,18 @@ document.getElementById("directionImg").src="others/direction_cw.png";
     }
 }
 */
+function updateScore(playerid, scoreofplayedcard){
+    let score= 0;
+    let cards= playerList[playerid].Cards;
+    for(let i = 0; i< cards.length; i++){
+        score = score + cards[i].Score;
+    
+    }
+    score = score - scoreofplayedcard;
+    document.getElementById("Score_"+playerid).textContent="Score: "+ score;
+}
 
-
-async function tryToPlayCard(value, color, wildColor, isDrawCard) {
+async function tryToPlayCard(value, color, wildColor, isDrawCard,score) {
     let url = `https://nowaunoweb.azurewebsites.net/api/Game/PlayCard/${gameId}?value=${value}&color=${color}&wildColor=${wildColor}`;
     let response = await fetch(url, {
         method: "PUT",
@@ -307,6 +327,7 @@ async function tryToPlayCard(value, color, wildColor, isDrawCard) {
         let cardPlayresult = await response.json();
         console.log("got cardplayresult:");
         if (!cardPlayresult.error) {
+            updateScore(currentPlayerId, score);
             removeCardFromPlayersHand(value, color);
             setTopCard(value, wildColor != undefined ? wildColor : color);
             // in case of Draw2/Draw4 call GetCards for the blocked player
@@ -315,8 +336,9 @@ async function tryToPlayCard(value, color, wildColor, isDrawCard) {
                 let blockedPlayer = getNextPlayer();
                 updatePlayerCards(blockedPlayer.Player);
             }
-
+            
             setCurrentPlayer(cardPlayresult);
+            
 
         }
         else {

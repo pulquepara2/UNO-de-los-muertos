@@ -92,17 +92,17 @@
   }
   
   #directionImg {
-    height: 150px;
+    height: 250px;
   }
   
-  .spinLeft {
+ /* .spinLeft {
     
-   /* animation: spin-left 3s linear infinite;*/
+   /* animation: spin-left 3s linear infinite;
   }
   
   .spinRight {
-   /* animation: spin-right 3s linear infinite;*/
-  }
+   /* animation: spin-right 3s linear infinite;
+  }*/
   
   .middlePlayerRow {
     min-height: 277px;
