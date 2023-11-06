@@ -10,7 +10,7 @@ let topCardColor;
 
 let myModal = new bootstrap.Modal(document.getElementById('playerNames'));
 let ColorchangeModal = new bootstrap.Modal(document.getElementById('ColorchangeModal'));
-
+let WinnerModal = new bootstrap.Modal(document.getElementById("WinnerModal"));
 document.getElementById("startbutton").addEventListener("click", function () {
     myModal.show();
 })
@@ -362,8 +362,8 @@ async function tryToPlayCard(value, color, wildColor, isDrawCard, score) {
             }
 
             setCurrentPlayer(cardPlayresult);
-            if(isWinner()!=null){
-                alert("we have a winner")
+            if (isWinner() != null) {
+                WinnerModal.show();
             }
         }
         else {
@@ -610,7 +610,7 @@ async function updatePlayerCards(playerName) {
 /*************************************************************/
 
 function isWinner() {
-    
+
     for (let i = 0; i < playerList.length; i++) {
         if (playerList[i].Cards.length == 0) {
             let winner = playerList[i].Player;
