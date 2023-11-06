@@ -107,6 +107,7 @@
   .middlePlayerRow {
     min-height: 277px;
     max-height: 277px;
+ 
   }
   
   .gap-15 {
@@ -164,3 +165,13 @@
     }
   }
   
+.color-buttons{
+margin-left: 30px;  
+}
+
+#player3column{
+  margin-top: 40px;
+}
+#player1column{
+  margin-bottom: 40px;
+}
