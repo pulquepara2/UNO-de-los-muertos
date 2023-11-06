@@ -317,20 +317,27 @@ function updateScore(playerid, scoreofplayedcard) {
     score = score - scoreofplayedcard;
     document.getElementById("Score_" + playerid).textContent = "Score: " + score;
 }
-
-function updateScoreAfterDrawCard(player,playerid) {
-    let cards= player.Cards;
+/************************************************************************************/
+// Aktualisiert den Score des Spielers, nachdem eine Karte gezogen hat
+/************************************************************************************/
+function updateScoreAfterDrawCard(player, playerid) {
+    let cards = player.Cards;
     let score = 0;
-    for(let i = 0; i < cards.length; i++){
-        score= score + cards[i].Score;
+    for (let i = 0; i < cards.length; i++) {
+        score = score + cards[i].Score;
     }
     document.getElementById("Score_" + playerid).textContent = "Score: " + score;
 }
-
-function updateScoreAfterActionCard(playerid, score){  
+/************************************************************************************/
+// Aktualisiert den Score des Spielers, nachdem er 2 oder 4 Karten ziehen musste
+/************************************************************************************/
+function updateScoreAfterActionCard(playerid, score) {
     document.getElementById("Score_" + playerid).textContent = "Score: " + score;
 }
 
+/************************************************************************************/
+// Karte spielen
+/************************************************************************************/
 async function tryToPlayCard(value, color, wildColor, isDrawCard, score) {
     let url = `https://nowaunoweb.azurewebsites.net/api/Game/PlayCard/${gameId}?value=${value}&color=${color}&wildColor=${wildColor}`;
     let response = await fetch(url, {
@@ -355,8 +362,9 @@ async function tryToPlayCard(value, color, wildColor, isDrawCard, score) {
             }
 
             setCurrentPlayer(cardPlayresult);
-
-
+            if(isWinner()!=null){
+                alert("we have a winner")
+            }
         }
         else {
             alert("Error: " + cardPlayresult.error);
@@ -422,7 +430,7 @@ async function drawCard() {
         //console.log(drawCardResult);
         if (!drawCardResult.error) {
             addCardToPlayersHand(drawCardResult.Card);
-            updateScoreAfterDrawCard(currentPlayer,currentPlayerId);
+            updateScoreAfterDrawCard(currentPlayer, currentPlayerId);
             setCurrentPlayerByName(drawCardResult.NextPlayer);  // Update the current player
         } else {
             alert("Error: " + drawCardResult.error);
@@ -596,4 +604,21 @@ async function updatePlayerCards(playerName) {
 }
 
 
+/**************************************************************/
+// ermittelt, ob und wer das Spiel gewonnen hat
+// zeigt das Winner-Modal
+/*************************************************************/
 
+function isWinner() {
+    
+    for (let i = 0; i < playerList.length; i++) {
+        if (playerList[i].Cards.length == 0) {
+            let winner = playerList[i].Player;
+            console.log(winner + "wins this game!");
+            return winner;
+        }
+        else {
+            return;
+        }
+    }
+}
