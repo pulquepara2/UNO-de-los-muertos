@@ -615,6 +615,7 @@ function isWinner() {
         if (playerList[i].Cards.length == 0) {
             let winner = playerList[i].Player;
             console.log(winner + "wins this game!");
+            document.getElementById("winner").textContent= winner + " wins this game!";
             return winner;
         }
         else {
