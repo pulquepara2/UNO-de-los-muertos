@@ -354,17 +354,17 @@ async function tryToPlayCard(value, color, wildColor, isDrawCard, score) {
             updateScore(currentPlayerId, score);
             removeCardFromPlayersHand(value, color);
             setTopCard(value, wildColor != undefined ? wildColor : color);
+            
             // in case of Draw2/Draw4 call GetCards for the blocked player
             if (isDrawCard) {
                 // in this case this is the blocked player
                 let blockedPlayer = getNextPlayer();
                 updatePlayerCards(blockedPlayer.Player);
             }
-
             setCurrentPlayer(cardPlayresult);
-            if (isWinner() != null) {
-                WinnerModal.show();
-            }
+            checkIfThereIsAWinner(); 
+                
+            
         }
         else {
             alert("Error: " + cardPlayresult.error);
@@ -383,7 +383,7 @@ function removeCardFromPlayersHand(value, color) {
     for (let i = 0; i < cardsOfCurrentPlayer.length; i++) {
         if (value == cardsOfCurrentPlayer[i].Value && color == cardsOfCurrentPlayer[i].Color) {
             cardsOfCurrentPlayer.splice(i, 1); // remove 1 item starting at index i
-            break
+            break;
         }
     }
     updateHtml(currentPlayerId);
@@ -606,20 +606,19 @@ async function updatePlayerCards(playerName) {
 
 /**************************************************************/
 // ermittelt, ob und wer das Spiel gewonnen hat
-// zeigt das Winner-Modal
+// 
 /*************************************************************/
 
-function isWinner() {
-
-    for (let i = 0; i < playerList.length; i++) {
-        if (playerList[i].Cards.length == 0) {
-            let winner = playerList[i].Player;
-            console.log(winner + "wins this game!");
-            document.getElementById("winner").textContent= winner + " wins this game!";
-            return winner;
+function checkIfThereIsAWinner() {
+    let winnerId = null;
+    for (let playerId = 0; playerId <= 3; playerId++) {
+        if (playerList[playerId].Cards.length === 0) {
+            winnerId = playerId;
+             
         }
-        else {
-            return;
+        if(winnerId !== null){
+            document.getElementById("winner").textContent= playerList[winnerId].Player + " wins this game!";
+            WinnerModal.show();
         }
     }
 }
